@@ -9,6 +9,7 @@ import { AnalyticsProvider } from '@/components/analytics-provider'
 import CookieConsent from '@/components/cookie-consent'
 import { Toaster } from 'sonner'
 import { ElementPickerListener } from '@/components/element-picker-listener'
+import { ErrorBoundary } from '@/components/error-boundary'
 
 const heading = Lato({
   subsets: ['latin'],
@@ -45,9 +46,11 @@ export default function RootLayout({
           <AnnouncementBar />
           <Header />
           <main className="min-h-screen">
-            <AnalyticsProvider>
-              {children}
-            </AnalyticsProvider>
+            <ErrorBoundary>
+              <AnalyticsProvider>
+                {children}
+              </AnalyticsProvider>
+            </ErrorBoundary>
           </main>
           <Footer />
           <CookieConsent />

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { getMedusaClient } from '@/lib/medusa-client'
+import { logger } from '@/lib/logger'
 import { useCart } from './use-cart'
 import { useStripeConfig } from './use-stripe-config'
 
@@ -121,7 +122,7 @@ export function useCheckout() {
 
     // Prevent duplicate requests
     if (isCompletingCheckout) {
-      console.log('Checkout already in progress, skipping duplicate request')
+      logger.debug('Checkout already in progress, skipping duplicate request')
       return null
     }
 
@@ -155,7 +156,7 @@ export function useCheckout() {
       if (errorMessage.includes('conflicted with another request') ||
           errorMessage.includes('Idempotency') ||
           errorMessage.includes('already completed')) {
-        console.log('Cart already completed detected - order was created previously')
+        logger.debug('Cart already completed detected - order was created previously')
 
         // Try to fetch the completed cart/order
         try {

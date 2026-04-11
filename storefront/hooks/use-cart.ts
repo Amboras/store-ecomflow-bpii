@@ -2,6 +2,8 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { getMedusaClient } from '@/lib/medusa-client'
+import { logger } from '@/lib/logger'
+import type { Promotion } from '@/types'
 
 const CART_ID_KEY = 'medusa_cart_id'
 
@@ -35,14 +37,14 @@ export function useCart() {
 
           // Check if cart is already completed (has been turned into an order)
           if (retrievedCart?.completed_at) {
-            console.log('Cart already completed, clearing and creating new cart')
+            logger.debug('Cart already completed, clearing and creating new cart')
             clearCartId()
             // Fall through to create new cart
           } else {
             return retrievedCart
           }
         } catch (error) {
-          console.log('Cart not found, creating new one')
+          logger.debug('Cart not found, creating new one')
           clearCartId()
         }
       }
@@ -89,7 +91,6 @@ export function useCart() {
     },
     onSuccess: (updatedCart) => {
       queryClient.setQueryData(['cart'], updatedCart)
-      queryClient.invalidateQueries({ queryKey: ['cart'] })
     },
     onError: (error) => {
       console.error('Error adding item to cart:', error)
@@ -107,7 +108,6 @@ export function useCart() {
     },
     onSuccess: (updatedCart) => {
       queryClient.setQueryData(['cart'], updatedCart)
-      queryClient.invalidateQueries({ queryKey: ['cart'] })
     },
   })
 
@@ -121,14 +121,13 @@ export function useCart() {
     },
     onSuccess: (updatedCart) => {
       queryClient.setQueryData(['cart'], updatedCart)
-      queryClient.invalidateQueries({ queryKey: ['cart'] })
     },
   })
 
   const applyPromoCode = useMutation({
     mutationFn: async (code: string) => {
       if (!cart) throw new Error('No cart available')
-      const existingCodes = (cart.promotions || []).map((p: any) => p.code)
+      const existingCodes = ((cart.promotions || []) as Promotion[]).map((p) => p.code)
       const response = await getMedusaClient().store.cart.update(cart.id, {
         promo_codes: [...existingCodes, code.trim().toUpperCase()],
       })
@@ -136,14 +135,13 @@ export function useCart() {
     },
     onSuccess: (updatedCart) => {
       queryClient.setQueryData(['cart'], updatedCart)
-      queryClient.invalidateQueries({ queryKey: ['cart'] })
     },
   })
 
   const removePromoCode = useMutation({
     mutationFn: async (code: string) => {
       if (!cart) throw new Error('No cart available')
-      const existingCodes = (cart.promotions || []).map((p: any) => p.code)
+      const existingCodes = ((cart.promotions || []) as Promotion[]).map((p) => p.code)
       const response = await getMedusaClient().store.cart.update(cart.id, {
         promo_codes: existingCodes.filter((c: string) => c !== code),
       })
@@ -151,7 +149,6 @@ export function useCart() {
     },
     onSuccess: (updatedCart) => {
       queryClient.setQueryData(['cart'], updatedCart)
-      queryClient.invalidateQueries({ queryKey: ['cart'] })
     },
   })
 
@@ -160,10 +157,10 @@ export function useCart() {
     queryClient.invalidateQueries({ queryKey: ['cart'] })
   }
 
-  const itemCount = cart?.items?.reduce((sum: number, item: any) => sum + item.quantity, 0) || 0
+  const itemCount = cart?.items?.reduce((sum: number, item: { quantity: number }) => sum + item.quantity, 0) || 0
   const subtotal = (cart as any)?.original_item_subtotal ?? cart?.subtotal ?? 0
   const total = cart?.total || 0
-  const appliedPromoCodes: string[] = (cart?.promotions || []).map((p: any) => p.code)
+  const appliedPromoCodes: string[] = ((cart?.promotions || []) as Promotion[]).map((p) => p.code)
   const discountTotal = (cart?.discount_total || 0) + ((cart as any)?.shipping_discount_total || 0)
 
   return {

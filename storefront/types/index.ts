@@ -188,3 +188,34 @@ export type FulfillmentItem = {
   line_item_id: string
   quantity: number
 }
+
+export type CartLineItem = {
+  id: string
+  title: string
+  thumbnail?: string | null
+  quantity: number
+  unit_price: number
+  total: number
+  product_id?: string
+  variant_id?: string
+  variant?: { title?: string }
+  is_tax_inclusive?: boolean
+}
+
+export type Promotion = {
+  id: string
+  code: string
+  type?: string
+  value?: number
+}
+
+export type ShippingOption = {
+  id: string
+  name: string
+  amount?: number
+  prices?: { amount: number }[]
+  type?: {
+    label: string
+    description?: string
+  }
+}

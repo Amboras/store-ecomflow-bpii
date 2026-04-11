@@ -16,6 +16,7 @@ import { PromoCodeInput } from '@/components/checkout/promo-code-input'
 import { getProductImage } from '@/lib/utils/placeholder-images'
 import { trackBeginCheckout } from '@/lib/analytics'
 import { formatPrice } from '@/lib/utils/format-price'
+import type { ShippingOption, CartLineItem } from '@/types'
 
 const steps: { key: CheckoutStep; label: string }[] = [
   { key: 'shipping', label: 'Shipping' },
@@ -196,7 +197,7 @@ export default function CheckoutPage() {
           {/* ============ LEFT COLUMN ============ */}
           <div>
             {error && (
-              <div className="flex items-start gap-3 p-4 mb-6 border border-destructive/30 rounded-sm bg-destructive/5">
+              <div role="alert" className="flex items-start gap-3 p-4 mb-6 border border-destructive/30 rounded-sm bg-destructive/5">
                 <AlertCircle className="h-4 w-4 text-destructive flex-shrink-0 mt-0.5" />
                 <p className="text-sm text-destructive">{error}</p>
               </div>
@@ -220,10 +221,12 @@ export default function CheckoutPage() {
                       })}
                       placeholder="Email address"
                       autoComplete="email"
+                      aria-invalid={!!errors.email}
+                      aria-describedby={errors.email ? 'email-error' : undefined}
                       className={inputCls(!!errors.email)}
                     />
                     {errors.email && (
-                      <p className="mt-1 text-xs text-destructive">{errors.email.message}</p>
+                      <p id="email-error" role="alert" className="mt-1 text-xs text-destructive">{errors.email.message}</p>
                     )}
                   </div>
 
@@ -252,10 +255,12 @@ export default function CheckoutPage() {
                           })}
                           placeholder="First name"
                           autoComplete="given-name"
+                          aria-invalid={!!errors.first_name}
+                          aria-describedby={errors.first_name ? 'first-name-error' : undefined}
                           className={inputCls(!!errors.first_name)}
                         />
                         {errors.first_name && (
-                          <p className="mt-1 text-xs text-destructive">{errors.first_name.message}</p>
+                          <p id="first-name-error" role="alert" className="mt-1 text-xs text-destructive">{errors.first_name.message}</p>
                         )}
                       </div>
                     )}
@@ -267,10 +272,12 @@ export default function CheckoutPage() {
                         {...register('last_name', { required: 'Last name is required' })}
                         placeholder="Last name"
                         autoComplete="family-name"
+                        aria-invalid={!!errors.last_name}
+                        aria-describedby={errors.last_name ? 'last-name-error' : undefined}
                         className={inputCls(!!errors.last_name)}
                       />
                       {errors.last_name && (
-                        <p className="mt-1 text-xs text-destructive">{errors.last_name.message}</p>
+                        <p id="last-name-error" role="alert" className="mt-1 text-xs text-destructive">{errors.last_name.message}</p>
                       )}
                     </div>
 
@@ -294,10 +301,12 @@ export default function CheckoutPage() {
                         {...register('address_1', { required: 'Address is required' })}
                         placeholder="Address"
                         autoComplete="address-line1"
+                        aria-invalid={!!errors.address_1}
+                        aria-describedby={errors.address_1 ? 'address-error' : undefined}
                         className={inputCls(!!errors.address_1)}
                       />
                       {errors.address_1 && (
-                        <p className="mt-1 text-xs text-destructive">{errors.address_1.message}</p>
+                        <p id="address-error" role="alert" className="mt-1 text-xs text-destructive">{errors.address_1.message}</p>
                       )}
                     </div>
 
@@ -314,10 +323,12 @@ export default function CheckoutPage() {
                           })}
                           placeholder={checkoutSettings?.address_line_2 === 'required' ? 'Apartment, suite, etc.' : 'Apartment, suite, etc. (optional)'}
                           autoComplete="address-line2"
+                          aria-invalid={!!errors.address_2}
+                          aria-describedby={errors.address_2 ? 'address2-error' : undefined}
                           className={inputCls(!!errors.address_2)}
                         />
                         {errors.address_2 && (
-                          <p className="mt-1 text-xs text-destructive">{errors.address_2.message}</p>
+                          <p id="address2-error" role="alert" className="mt-1 text-xs text-destructive">{errors.address_2.message}</p>
                         )}
                       </div>
                     )}
@@ -329,10 +340,12 @@ export default function CheckoutPage() {
                         {...register('city', { required: 'City is required' })}
                         placeholder="City"
                         autoComplete="address-level2"
+                        aria-invalid={!!errors.city}
+                        aria-describedby={errors.city ? 'city-error' : undefined}
                         className={inputCls(!!errors.city)}
                       />
                       {errors.city && (
-                        <p className="mt-1 text-xs text-destructive">{errors.city.message}</p>
+                        <p id="city-error" role="alert" className="mt-1 text-xs text-destructive">{errors.city.message}</p>
                       )}
                     </div>
 
@@ -349,10 +362,12 @@ export default function CheckoutPage() {
                         })}
                         placeholder="Postal code"
                         autoComplete="postal-code"
+                        aria-invalid={!!errors.postal_code}
+                        aria-describedby={errors.postal_code ? 'postal-error' : undefined}
                         className={inputCls(!!errors.postal_code)}
                       />
                       {errors.postal_code && (
-                        <p className="mt-1 text-xs text-destructive">{errors.postal_code.message}</p>
+                        <p id="postal-error" role="alert" className="mt-1 text-xs text-destructive">{errors.postal_code.message}</p>
                       )}
                     </div>
 
@@ -373,10 +388,12 @@ export default function CheckoutPage() {
                         })}
                         placeholder={checkoutSettings?.phone === 'required' ? 'Phone' : 'Phone (optional)'}
                         autoComplete="tel"
+                        aria-invalid={!!errors.phone}
+                        aria-describedby={errors.phone ? 'phone-error' : undefined}
                         className={inputCls(!!errors.phone)}
                       />
                       {errors.phone && (
-                        <p className="mt-1 text-xs text-destructive">{errors.phone.message}</p>
+                        <p id="phone-error" role="alert" className="mt-1 text-xs text-destructive">{errors.phone.message}</p>
                       )}
                     </div>
 
@@ -395,7 +412,7 @@ export default function CheckoutPage() {
                     <p className="text-sm text-muted-foreground py-4">No shipping options available for this address.</p>
                   ) : (
                     <div className="space-y-2">
-                      {shippingOptions.map((option: any) => {
+                      {shippingOptions.map((option: ShippingOption) => {
                         const price = option.amount != null ? option.amount : option.prices?.[0]?.amount
                         const priceLabel = price === 0 ? 'Free' : price != null ? formatPrice(price, currency) : '—'
 
@@ -455,7 +472,7 @@ export default function CheckoutPage() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Method</span>
-                    <span>{shippingOptions.find((o: any) => o.id === selectedShipping)?.name || 'Selected'}</span>
+                    <span>{shippingOptions.find((o: ShippingOption) => o.id === selectedShipping)?.name || 'Selected'}</span>
                   </div>
                 </div>
 
@@ -521,7 +538,7 @@ export default function CheckoutPage() {
                 ) : (
                   <>
                     <div className="space-y-4 mb-6">
-                      {cart?.items?.map((item: any) => (
+                      {cart?.items?.map((item: CartLineItem) => (
                         <div key={item.id} className="flex gap-3">
                           <div className="relative h-16 w-14 flex-shrink-0 overflow-hidden bg-muted rounded-sm">
                             <Image src={getProductImage(item.thumbnail, item.product_id || item.id)} alt={item.title} fill className="object-cover" />
@@ -552,7 +569,7 @@ export default function CheckoutPage() {
 
                     <div className="space-y-2 text-sm border-t pt-4">
                       {(() => {
-                        const isTaxInclusive = cart?.items?.some((item: any) => item.is_tax_inclusive)
+                        const isTaxInclusive = cart?.items?.some((item: CartLineItem) => item.is_tax_inclusive)
                         const checkoutSubtotal = isTaxInclusive
                           ? ((cart as any)?.original_item_total ?? 0)
                           : ((cart as any)?.original_item_subtotal ?? cart?.subtotal ?? 0)
