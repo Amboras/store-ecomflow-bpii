@@ -16,8 +16,10 @@ The admin dashboard Inventory page shows stock levels for all product variants a
 ## Medusa Inventory
 
 Inventory is managed through the Medusa admin API. On the storefront:
-- Variant `inventory_quantity` indicates stock level
-- `allow_backorder` flag determines if out-of-stock purchases are allowed
+- Inventory is **always tracked** — every variant has a live `inventory_quantity`
+- `allow_backorder` decides what happens at zero stock:
+  - `allow_backorder: false` (default) — show "Sold Out", disable add-to-cart
+  - `allow_backorder: true` — keep the variant buyable past zero stock
 - Stock is checked at add-to-cart time and again at checkout
 
 ## Common tasks

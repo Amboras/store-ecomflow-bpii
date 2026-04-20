@@ -258,6 +258,6 @@ logs/
 - Follow existing naming conventions and patterns
 - Prices are always in cents — divide by 100 for display
 - Cart ID lives in localStorage — never assume a cart exists, always handle creation
-- Stock checks: respect `manage_inventory` flag before showing stock status
+- Stock checks: inventory is always tracked; use `allow_backorder` to decide whether a zero-stock variant is sold out or still purchasable
 - **After ANY code change: check `logs/storefront-pm2-out.log` for "✓ Compiled" and no 500 errors**
 - **If user reports issue: check `logs/storefront-pm2-error.log` FIRST before debugging**
