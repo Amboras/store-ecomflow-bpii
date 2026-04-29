@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react'
 import Image from 'next/image'
-import { Package, Star, ChevronDown } from 'lucide-react'
+import { Package, Star, ChevronDown, Play, Camera } from 'lucide-react'
 import { useProductReviews } from '@amboras-dev/reviews'
 
 const ACCENT = '#E91E8C'
@@ -57,6 +57,11 @@ function hashColor(seed: string): string {
   return `hsl(${hue}, 65%, 75%)`
 }
 
+interface ReviewMediaItem {
+  url: string
+  type: 'image' | 'video'
+}
+
 interface ReviewCardData {
   id: string
   rating: number
@@ -64,7 +69,8 @@ interface ReviewCardData {
   title: string | null
   customerName: string
   createdAt: string
-  imageUrl: string | null
+  /** Customer-uploaded media (photos/videos) on this review */
+  media: ReviewMediaItem[]
 }
 
 function ReviewCard({
@@ -82,7 +88,21 @@ function ReviewCard({
   currencyCode?: string | null
   productThumbnail?: string | null
 }) {
-  const cardImage = review.imageUrl || productThumbnail
+  const customerPhotos = review.media.filter((m) => m.type === 'image')
+  const customerVideo = review.media.find((m) => m.type === 'video')
+  const hasCustomerMedia = customerPhotos.length > 0 || !!customerVideo
+
+  // Hero image: prefer the customer's first photo, then a video poster
+  // placeholder, then the product thumbnail. Always render something.
+  const heroImage =
+    customerPhotos[0]?.url ||
+    (customerVideo ? null : productThumbnail) ||
+    productThumbnail ||
+    null
+
+  // Extra customer photos beyond the first (rendered as a strip below hero)
+  const extraPhotos = customerPhotos.slice(1, 4)
+
   const showPriceRow =
     typeof priceAmount === 'number' &&
     typeof compareAtAmount === 'number' &&
@@ -91,22 +111,70 @@ function ReviewCard({
 
   return (
     <article className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
-      {/* Top image */}
-      <div className="relative aspect-[4/3] bg-gray-100">
-        {cardImage ? (
+      {/* Hero media area */}
+      <div className="relative aspect-[4/3] bg-gray-100 overflow-hidden">
+        {customerVideo ? (
+          <video
+            src={customerVideo.url}
+            className="absolute inset-0 h-full w-full object-cover"
+            muted
+            playsInline
+            preload="metadata"
+            poster={customerPhotos[0]?.url || productThumbnail || undefined}
+          />
+        ) : heroImage ? (
           <Image
-            src={cardImage}
+            src={heroImage}
             alt={review.title || `Review by ${review.customerName}`}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1280px) 33vw, 400px"
             className="object-cover"
+            loading="eager"
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center text-gray-300">
             <Package className="h-10 w-10" strokeWidth={1.5} />
           </div>
         )}
+
+        {/* Video play overlay */}
+        {customerVideo && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="h-12 w-12 rounded-full bg-black/55 flex items-center justify-center">
+              <Play className="h-5 w-5 text-white" fill="white" strokeWidth={0} />
+            </div>
+          </div>
+        )}
+
+        {/* Customer photo badge */}
+        {hasCustomerMedia && (
+          <span
+            className="absolute top-3 left-3 inline-flex items-center gap-1 rounded-full bg-white/95 backdrop-blur px-2.5 py-1 text-[11px] font-semibold shadow-sm"
+            style={{ color: ACCENT }}
+          >
+            <Camera className="h-3 w-3" strokeWidth={2.5} />
+            Customer photo
+          </span>
+        )}
       </div>
+
+      {/* Extra photo strip (only when the customer uploaded multiple) */}
+      {extraPhotos.length > 0 && (
+        <div className="grid grid-cols-3 gap-1 p-1 bg-gray-50">
+          {extraPhotos.map((photo, idx) => (
+            <div key={photo.url} className="relative aspect-square overflow-hidden rounded">
+              <Image
+                src={photo.url}
+                alt={`Customer photo ${idx + 2}`}
+                fill
+                sizes="120px"
+                className="object-cover"
+                loading="eager"
+              />
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Body */}
       <div className="p-5 flex-1 flex flex-col">
@@ -208,11 +276,19 @@ export default function CustomerReviewsGrid({
   const totalCount = data?.count ?? 0
 
   const cards = useMemo<ReviewCardData[]>(() => {
-    return reviews.map((r) => {
-      const firstImage = r.media?.find((m) => m.type === 'image')?.url ?? null
-      // The plugin SDK type uses customer_name from the API; fall back gracefully.
+    // Sort: reviews with photos/videos first, then by recency (preserved order from API).
+    const sorted = [...reviews].sort((a, b) => {
+      const aHas = (a.media?.length ?? 0) > 0 ? 1 : 0
+      const bHas = (b.media?.length ?? 0) > 0 ? 1 : 0
+      return bHas - aHas
+    })
+    return sorted.map((r) => {
       const rawName =
         (r as { customer_name?: string | null }).customer_name?.trim() || ''
+      const media: ReviewMediaItem[] = (r.media || []).map((m) => ({
+        url: m.url,
+        type: m.type === 'video' ? 'video' : 'image',
+      }))
       return {
         id: r.id,
         rating: r.rating,
@@ -220,7 +296,7 @@ export default function CustomerReviewsGrid({
         title: r.title ?? null,
         customerName: rawName || 'Verified Customer',
         createdAt: r.created_at,
-        imageUrl: firstImage,
+        media,
       }
     })
   }, [reviews])
