@@ -10,6 +10,7 @@ import ProductActions from '@/components/product/product-actions'
 import ProductAccordion from '@/components/product/product-accordion'
 import { ProductViewTracker } from '@/components/product/product-view-tracker'
 import ReviewsWidget from '@/components/plugins/reviews/ReviewsWidget'
+import CustomerReviewsGrid from '@/components/reviews/customer-reviews-grid'
 import { getProductPlaceholder } from '@/lib/utils/placeholder-images'
 import { type VariantExtension } from '@/components/product/product-price'
 
@@ -206,7 +207,21 @@ export default async function ProductPage({
         </div>
       </div>
 
-      {/* Customer Reviews */}
+      {/* Customer Reviews — curated 3-card grid */}
+      <CustomerReviewsGrid
+        productId={product.id}
+        productTitle={product.title}
+        productThumbnail={displayImages[0]?.url ?? null}
+        priceAmount={product.variants?.[0]?.calculated_price?.calculated_amount ?? null}
+        compareAtAmount={
+          product.variants?.[0]?.id
+            ? variantExtensions[product.variants[0].id]?.compare_at_price ?? null
+            : null
+        }
+        currencyCode={product.variants?.[0]?.calculated_price?.currency_code ?? null}
+      />
+
+      {/* Full reviews widget with stats + pagination */}
       <ReviewsWidget productId={product.id} />
     </>
   )
