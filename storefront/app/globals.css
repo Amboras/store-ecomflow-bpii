@@ -4,52 +4,54 @@
 
 @layer base {
   :root {
-    /* Comic / meme palette */
-    --background: 52 100% 92%;          /* cream-yellow paper */
-    --foreground: 0 0% 4%;               /* ink black */
-    --muted: 52 100% 85%;
-    --muted-foreground: 0 0% 30%;
-    --accent: 332 100% 62%;              /* hot pink */
-    --accent-foreground: 0 0% 100%;
-    --border: 0 0% 4%;                   /* hard black borders everywhere */
-    --ring: 332 100% 62%;
-    --primary: 0 0% 4%;
-    --primary-foreground: 56 100% 50%;   /* yellow on black */
-    --destructive: 0 100% 55%;
-    --destructive-foreground: 0 0% 100%;
-  }
-
-  .dark {
-    --background: 0 0% 8%;
-    --foreground: 56 100% 88%;
-    --muted: 0 0% 14%;
+    /* Aura — dark, sleek, red accent */
+    --background: 0 0% 0%;                 /* pure black */
+    --foreground: 0 0% 100%;               /* white */
+    --muted: 0 0% 6%;
     --muted-foreground: 0 0% 65%;
-    --accent: 332 100% 62%;
+    --accent: 0 84% 60%;                   /* red accent */
     --accent-foreground: 0 0% 100%;
-    --border: 56 100% 88%;
-    --ring: 332 100% 62%;
-    --primary: 56 100% 50%;
-    --primary-foreground: 0 0% 4%;
-    --destructive: 0 100% 55%;
+    --border: 0 0% 100%;                   /* white at low opacity (used via /10) */
+    --ring: 0 84% 60%;
+    --primary: 0 84% 60%;
+    --primary-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
+    --card: 0 0% 4%;
+    --card-foreground: 0 0% 100%;
   }
 }
 
 @layer base {
   * {
-    border-color: hsl(var(--border));
+    border-color: rgb(255 255 255 / 0.08);
+  }
+
+  html, body {
+    background: #000000;
   }
 
   body {
-    @apply bg-background text-foreground font-body antialiased;
+    @apply text-foreground font-body antialiased;
+    /* Starfield + red radial glow */
+    background-color: #000;
     background-image:
-      radial-gradient(circle at 1px 1px, rgba(0,0,0,0.12) 1px, transparent 0);
-    background-size: 18px 18px;
-    animation: halftone-shift 8s linear infinite;
+      radial-gradient(ellipse 70% 60% at 50% 100%, rgba(220, 38, 38, 0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 80% 50% at 50% 0%, rgba(40, 0, 0, 0.4) 0%, transparent 60%),
+      radial-gradient(1px 1px at 25% 15%, rgba(255,255,255,0.6) 50%, transparent 100%),
+      radial-gradient(1px 1px at 75% 30%, rgba(255,255,255,0.5) 50%, transparent 100%),
+      radial-gradient(1px 1px at 40% 70%, rgba(255,255,255,0.7) 50%, transparent 100%),
+      radial-gradient(1px 1px at 90% 80%, rgba(255,255,255,0.4) 50%, transparent 100%),
+      radial-gradient(1px 1px at 10% 50%, rgba(255,255,255,0.6) 50%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 60% 20%, rgba(255,255,255,0.8) 50%, transparent 100%),
+      radial-gradient(1px 1px at 30% 90%, rgba(255,255,255,0.5) 50%, transparent 100%),
+      radial-gradient(1px 1px at 85% 55%, rgba(255,255,255,0.6) 50%, transparent 100%);
+    background-size: 100% 100%, 100% 100%, 800px 600px, 800px 600px, 800px 600px, 800px 600px, 800px 600px, 800px 600px, 800px 600px, 800px 600px;
+    background-attachment: fixed;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-heading uppercase tracking-wide;
+    @apply font-heading tracking-tight text-white;
   }
 }
 
@@ -62,129 +64,73 @@
     text-wrap: balance;
   }
 
-  /* Halftone dot background */
-  .halftone {
-    background-image: radial-gradient(circle, rgba(0,0,0,0.25) 1.2px, transparent 1.2px);
-    background-size: 10px 10px;
+  /* Starfield overlay (use on hero sections for extra density) */
+  .starfield {
+    background-image:
+      radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.7), transparent 50%),
+      radial-gradient(1px 1px at 70% 60%, rgba(255,255,255,0.6), transparent 50%),
+      radial-gradient(1.5px 1.5px at 45% 80%, rgba(255,255,255,0.85), transparent 50%),
+      radial-gradient(1px 1px at 90% 25%, rgba(255,255,255,0.5), transparent 50%),
+      radial-gradient(1px 1px at 12% 75%, rgba(255,255,255,0.65), transparent 50%),
+      radial-gradient(1px 1px at 55% 15%, rgba(255,255,255,0.55), transparent 50%);
+    background-size: 100% 100%;
   }
 
-  .halftone-pink {
-    background-image: radial-gradient(circle, #FF3EA5 1.5px, transparent 1.5px);
-    background-size: 12px 12px;
+  /* Red radial glow utility */
+  .red-glow {
+    background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(220, 38, 38, 0.35) 0%, transparent 70%);
   }
 
-  .halftone-yellow {
-    background-image: radial-gradient(circle, #FFE600 1.8px, transparent 1.8px);
-    background-size: 14px 14px;
+  .red-glow-soft {
+    background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(220, 38, 38, 0.18) 0%, transparent 70%);
   }
 
-  /* Diagonal stripes — classic comic motion lines */
-  .stripes-black {
-    background-image: repeating-linear-gradient(
-      45deg,
-      #0A0A0A 0,
-      #0A0A0A 8px,
-      transparent 8px,
-      transparent 16px
-    );
+  /* Aura pill button — dark transparent with subtle border */
+  .btn-pill {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full
+           bg-white/[0.04] border border-white/15 text-white text-sm font-medium
+           backdrop-blur-sm transition-all duration-200;
+  }
+  .btn-pill:hover {
+    @apply bg-white/[0.08] border-white/25 -translate-y-0.5;
   }
 
-  /* Comic outline */
-  .comic-border {
-    @apply border-[3px] border-comic-ink;
+  /* Aura red gradient pill button */
+  .btn-pill-red {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full
+           text-white text-sm font-medium
+           transition-all duration-200 relative overflow-hidden;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #991b1b 100%);
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.1) inset, 0 4px 20px -4px rgba(220, 38, 38, 0.5);
+  }
+  .btn-pill-red:hover {
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.15) inset, 0 8px 32px -4px rgba(220, 38, 38, 0.7);
+    transform: translateY(-2px);
   }
 
-  .comic-border-thick {
-    @apply border-4 border-comic-ink;
+  /* Aura card — dark with subtle border */
+  .card-aura {
+    @apply bg-white/[0.02] border border-white/10 rounded-2xl backdrop-blur-sm transition-all duration-300;
+  }
+  .card-aura:hover {
+    @apply bg-white/[0.04] border-white/20;
   }
 
-  /* Comic button */
-  .btn-comic {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 font-heading uppercase tracking-wide text-base
-           bg-comic-yellow text-comic-ink border-[3px] border-comic-ink shadow-comic
-           transition-all duration-150;
-  }
-  .btn-comic:hover {
-    @apply -translate-x-0.5 -translate-y-0.5 shadow-comic-lg;
-  }
-  .btn-comic:active {
-    @apply translate-x-1 translate-y-1 shadow-none;
+  /* Glass card (for floating elements) */
+  .card-glass {
+    @apply bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl;
   }
 
-  .btn-comic-pink {
-    @apply btn-comic bg-comic-pink text-white;
+  /* Underline link */
+  .link-underline {
+    @apply relative;
   }
-  .btn-comic-blue {
-    @apply btn-comic bg-comic-blue text-comic-ink;
-  }
-  .btn-comic-black {
-    @apply btn-comic bg-comic-ink text-comic-yellow;
-  }
-
-  /* Comic card */
-  .card-comic {
-    @apply bg-white border-[3px] border-comic-ink shadow-comic transition-all duration-200;
-  }
-  .card-comic:hover {
-    @apply -translate-x-0.5 -translate-y-0.5 shadow-comic-lg;
-  }
-
-  /* Hover jiggle */
-  .hover-jiggle {
-    @apply transition-transform duration-150;
-  }
-  .hover-jiggle:hover {
-    animation: jiggle 0.4s ease-in-out 1;
-  }
-
-  /* Pulse-zoom on hover */
-  .hover-pop {
-    @apply transition-transform duration-200;
-  }
-  .hover-pop:hover {
-    @apply scale-110 rotate-3;
-  }
-
-  /* Speech bubble */
-  .speech-bubble {
-    @apply relative bg-white border-[3px] border-comic-ink rounded-[1.5rem] px-6 py-4 shadow-comic;
-  }
-  .speech-bubble::after {
+  .link-underline::after {
     content: '';
-    position: absolute;
-    bottom: -18px;
-    left: 40px;
-    width: 0;
-    height: 0;
-    border-left: 14px solid transparent;
-    border-right: 14px solid transparent;
-    border-top: 22px solid #0A0A0A;
+    @apply absolute bottom-0 left-0 h-px w-0 bg-red-500 transition-all duration-200;
   }
-  .speech-bubble::before {
-    content: '';
-    position: absolute;
-    bottom: -13px;
-    left: 43px;
-    width: 0;
-    height: 0;
-    border-left: 11px solid transparent;
-    border-right: 11px solid transparent;
-    border-top: 18px solid white;
-    z-index: 1;
-  }
-
-  /* Burst / starburst tag */
-  .burst-tag {
-    @apply inline-flex items-center justify-center font-heading uppercase
-           bg-comic-red text-white border-[3px] border-comic-ink
-           px-4 py-2 text-sm;
-    clip-path: polygon(
-      50% 0%, 61% 12%, 75% 5%, 78% 22%, 95% 25%,
-      88% 40%, 100% 50%, 88% 60%, 95% 75%, 78% 78%,
-      75% 95%, 61% 88%, 50% 100%, 39% 88%, 25% 95%,
-      22% 78%, 5% 75%, 12% 60%, 0% 50%, 12% 40%,
-      5% 25%, 22% 22%, 25% 5%, 39% 12%
-    );
+  .link-underline:hover::after {
+    @apply w-full;
   }
 
   /* Brand color utilities (kept for compatibility) */
@@ -211,15 +157,11 @@
     background-color: var(--brand-secondary, hsl(var(--accent)));
   }
 
-  .link-underline {
-    @apply relative;
-  }
-  .link-underline::after {
-    content: '';
-    @apply absolute bottom-0 left-0 h-[3px] w-0 bg-comic-ink transition-all duration-200;
-  }
-  .link-underline:hover::after {
-    @apply w-full;
+  /* Watermark giant text (decoration) */
+  .watermark-text {
+    @apply font-heading font-black uppercase select-none pointer-events-none;
+    color: rgba(255,255,255,0.04);
+    -webkit-text-stroke: 1px rgba(255,255,255,0.06);
   }
 }
 
@@ -230,26 +172,26 @@ html {
 
 /* Selection color */
 ::selection {
-  @apply bg-comic-pink text-white;
+  background: rgba(220, 38, 38, 0.6);
+  color: #ffffff;
 }
 
 /* Focus styles */
 :focus-visible {
-  @apply outline-2 outline-offset-2 outline-comic-pink;
+  outline: 2px solid #ef4444;
+  outline-offset: 2px;
 }
 
 /* Cookie consent animation */
 @keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(1rem);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(1rem); }
+  to { opacity: 1; transform: translateY(0); }
 }
-
 .animate-fade-in {
   animation: fade-in 0.3s ease-out;
+}
+
+/* Native form controls — adapt to dark theme */
+select, input, textarea {
+  color-scheme: dark;
 }

@@ -12,7 +12,7 @@ export default function ProductCard({ product, variantExtensions }: ProductCardP
   const variant = product.variants?.[0]
   const calculatedPrice = variant?.calculated_price
 
-  const currency = calculatedPrice?.currency_code || 'usd'
+  const currency = calculatedPrice?.currency_code || 'inr'
   const currentAmount = calculatedPrice?.calculated_amount
   const ext = variant?.id ? variantExtensions?.[variant.id] : null
 
@@ -21,29 +21,34 @@ export default function ProductCard({ product, variantExtensions }: ProductCardP
 
   return (
     <Link href={`/products/${product.handle}`} className="group block" prefetch={true}>
-      <div className="card-comic bg-white overflow-hidden hover:-translate-y-1 hover:rotate-1 hover:shadow-comic-lg transition-all duration-200">
+      <div className="relative card-aura overflow-hidden hover:-translate-y-1 transition-all duration-500 hover:shadow-glow-red">
         {/* Product Image */}
-        <div className="relative aspect-square overflow-hidden bg-comic-cream border-b-[3px] border-comic-ink">
+        <div className="relative aspect-square overflow-hidden bg-white/[0.02]">
           <Image
             src={getProductImage(product.thumbnail, product.id)}
             alt={product.title}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-            className={`object-cover transition-transform duration-500 ease-out group-hover:scale-110 group-hover:rotate-2 ${soldOut ? 'opacity-50' : ''}`}
+            className={`object-cover transition-transform duration-700 ease-out group-hover:scale-110 ${soldOut ? 'opacity-40' : ''}`}
           />
+          {/* Subtle bottom gradient */}
+          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
+
           {soldOut && (
-            <div className="absolute top-2 left-2 bg-comic-ink text-comic-yellow font-heading text-sm uppercase tracking-wider px-3 py-1 border-[3px] border-comic-ink shadow-comic-sm animate-shake">
-              Sold Out!
+            <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-black/70 border border-white/20 backdrop-blur-md text-[10px] uppercase tracking-wider text-white">
+              Sold out
             </div>
           )}
           {!soldOut && onSale && (
-            <div className="absolute top-2 right-2 burst-tag !text-xs animate-spin-slow">SALE!</div>
+            <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-red-500/90 border border-red-400/40 backdrop-blur-md text-[10px] uppercase tracking-wider font-medium text-white shadow-glow-red">
+              Sale
+            </div>
           )}
         </div>
 
         {/* Product Info */}
-        <div className="p-3 sm:p-4 space-y-1.5 bg-white">
-          <h3 className={`font-heading text-lg sm:text-xl tracking-wide line-clamp-1 ${soldOut ? 'text-muted-foreground' : 'text-comic-ink'}`}>
+        <div className="p-4 space-y-1.5">
+          <h3 className={`text-sm sm:text-base font-medium line-clamp-1 ${soldOut ? 'text-white/40' : 'text-white'}`}>
             {product.title}
           </h3>
           <ProductPrice

@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { useCart } from '@/hooks/use-cart'
-import { Minus, Plus, Check, Loader2, Zap } from 'lucide-react'
+import { Minus, Plus, Check, Loader2, ShoppingBag } from 'lucide-react'
 import { toast } from 'sonner'
 import ProductPrice, { type VariantExtension } from './product-price'
 import { trackAddToCart } from '@/lib/analytics'
@@ -41,7 +41,6 @@ interface ProductOptionWithValues {
   values?: (string | ProductOptionValue)[]
 }
 
-// Helper: extract price amount from calculated_price object
 function getVariantPriceAmount(variant: ProductVariantWithPrice | undefined): number | null {
   const cp = variant?.calculated_price
   if (!cp) return null
@@ -49,17 +48,12 @@ function getVariantPriceAmount(variant: ProductVariantWithPrice | undefined): nu
 }
 
 export default function ProductActions({ product, variantExtensions }: ProductActionsProps) {
-  // Medusa Admin API returns variant.options as VariantOption[] (the `options`
-  // relation expanded), but the SDK's generic ProductVariant type declares it
-  // as Record<string, string>. Cast here so the rest of the component can use
-  // the actual runtime shape.
   const variants = useMemo(
     () => (product.variants || []) as unknown as ProductVariantWithPrice[],
     [product.variants],
   )
   const options = useMemo(() => product.options || [], [product.options])
 
-  // Track selected value per option: { "opt_xxx": "S", "opt_yyy": "Black" }
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>(() => {
     const defaults: Record<string, string> = {}
     const firstVariant = variants[0]
@@ -78,10 +72,8 @@ export default function ProductActions({ product, variantExtensions }: ProductAc
   const [justAdded, setJustAdded] = useState(false)
   const { addItem, isAddingItem } = useCart()
 
-  // Find variant matching all selected options
   const selectedVariant = useMemo(() => {
     if (variants.length <= 1) return variants[0]
-
     return variants.find((v: ProductVariantWithPrice) => {
       if (!v.options) return false
       return v.options.every((opt: VariantOption) => {
@@ -92,11 +84,10 @@ export default function ProductActions({ product, variantExtensions }: ProductAc
     }) || variants[0]
   }, [variants, selectedOptions])
 
-  // Extension data for selected variant (compare-at + inventory)
   const ext = selectedVariant?.id ? variantExtensions?.[selectedVariant.id] : null
   const currentPriceCents = getVariantPriceAmount(selectedVariant)
   const cp = selectedVariant?.calculated_price
-  const currency = (cp && typeof cp !== 'number' ? cp.currency_code : undefined) || 'usd'
+  const currency = (cp && typeof cp !== 'number' ? cp.currency_code : undefined) || 'inr'
 
   const manageInventory = ext?.manage_inventory ?? false
   const inventoryQuantity = ext?.inventory_quantity
@@ -137,11 +128,10 @@ export default function ProductActions({ product, variantExtensions }: ProductAc
     )
   }
 
-  // Should we show variant selectors?
   const hasMultipleVariants = variants.length > 1
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-7">
       {/* Price */}
       <ProductPrice
         amount={currentPriceCents}
@@ -153,12 +143,10 @@ export default function ProductActions({ product, variantExtensions }: ProductAc
 
       {/* Option Selectors */}
       {hasMultipleVariants && options.map((option: ProductOptionWithValues) => {
-        // option.values is an array of { id, value, ... } objects
         const values = (option.values || []).map((v: string | ProductOptionValue) =>
           typeof v === 'string' ? v : v.value
         ).filter(Boolean) as string[]
 
-        // Skip if only "One Size" or "Default"
         if (values.length <= 1 && (values[0] === 'One Size' || values[0] === 'Default')) {
           return null
         }
@@ -168,19 +156,17 @@ export default function ProductActions({ product, variantExtensions }: ProductAc
 
         return (
           <div key={optionId}>
-            <h3 className="text-sm font-heading uppercase tracking-wide text-comic-ink mb-3">
+            <h3 className="text-xs uppercase tracking-[0.15em] text-white/50 mb-3 font-medium">
               {option.title}
               {selectedValue && (
-                <span className="ml-2 text-comic-pink">
-                  — {selectedValue}
+                <span className="ml-2 text-white/80 normal-case tracking-normal">
+                  · {selectedValue}
                 </span>
               )}
             </h3>
             <div className="flex flex-wrap gap-2">
               {values.map((value) => {
                 const isSelected = selectedValue === value
-
-                // Check availability: is there a variant with this option value that's in stock?
                 const isAvailable = variants.some((v: ProductVariantWithPrice) => {
                   const hasValue = v.options?.some(
                     (o: VariantOption) => (o.option_id === optionId || o.option?.id === optionId) && o.value === value
@@ -196,12 +182,12 @@ export default function ProductActions({ product, variantExtensions }: ProductAc
                     key={value}
                     onClick={() => handleOptionChange(optionId, value)}
                     disabled={!isAvailable}
-                    className={`min-w-[52px] px-4 py-2.5 text-sm font-heading uppercase tracking-wide border-[3px] border-comic-ink transition-all duration-150 ${
+                    className={`min-w-[52px] px-4 py-2.5 rounded-full text-sm font-medium border transition-all duration-200 ${
                       isSelected
-                        ? 'bg-comic-ink text-comic-yellow shadow-comic-sm -translate-x-0.5 -translate-y-0.5'
+                        ? 'bg-white text-black border-white'
                         : isAvailable
-                        ? 'bg-white text-comic-ink hover:-translate-y-0.5 hover:shadow-comic-sm'
-                        : 'bg-comic-cream text-comic-ink/40 line-through cursor-not-allowed'
+                        ? 'bg-white/[0.04] text-white/80 border-white/15 hover:border-white/40 hover:bg-white/[0.08]'
+                        : 'bg-white/[0.02] text-white/30 border-white/5 line-through cursor-not-allowed'
                     }`}
                   >
                     {value}
@@ -215,62 +201,63 @@ export default function ProductActions({ product, variantExtensions }: ProductAc
 
       {/* Low Stock Warning */}
       {isLowStock && (
-        <div className="inline-block bg-comic-red text-white border-[3px] border-comic-ink shadow-comic-sm px-3 py-1.5 font-heading uppercase tracking-wide text-xs animate-pulse">
-          ⚡ Only {inventoryQuantity} left! ⚡
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/30 text-xs text-red-400">
+          <span className="h-1.5 w-1.5 rounded-full bg-red-400 animate-pulse" />
+          Only {inventoryQuantity} left in stock
         </div>
       )}
 
       {/* Quantity + Add to Cart */}
       <div className="flex gap-3">
-        <div className="flex items-center border-[3px] border-comic-ink bg-white shadow-comic-sm">
+        <div className="flex items-center rounded-full bg-white/[0.04] border border-white/15 backdrop-blur-sm">
           <button
             onClick={() => setQuantity(Math.max(1, quantity - 1))}
-            className="p-3 hover:bg-comic-yellow transition-colors disabled:opacity-30"
+            className="p-3 text-white/70 hover:text-white transition-colors disabled:opacity-30"
             disabled={quantity <= 1}
             aria-label="Decrease quantity"
           >
-            <Minus className="h-4 w-4 text-comic-ink" strokeWidth={3} />
+            <Minus className="h-4 w-4" strokeWidth={2} />
           </button>
-          <span className="w-12 text-center text-base font-heading tabular-nums text-comic-ink border-x-[3px] border-comic-ink py-2">{quantity}</span>
+          <span className="w-10 text-center text-sm font-medium tabular-nums text-white">{quantity}</span>
           <button
             onClick={() => setQuantity(quantity + 1)}
-            className="p-3 hover:bg-comic-yellow transition-colors disabled:opacity-30"
+            className="p-3 text-white/70 hover:text-white transition-colors disabled:opacity-30"
             disabled={isOutOfStock || (inventoryQuantity != null && quantity >= inventoryQuantity)}
             aria-label="Increase quantity"
           >
-            <Plus className="h-4 w-4 text-comic-ink" strokeWidth={3} />
+            <Plus className="h-4 w-4" strokeWidth={2} />
           </button>
         </div>
 
         <button
           onClick={handleAddToCart}
           disabled={isOutOfStock || isAddingItem}
-          className={`flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 font-heading uppercase tracking-wide text-base border-[3px] border-comic-ink transition-all duration-150 ${
+          className={`flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full text-sm font-medium transition-all duration-200 ${
             isOutOfStock
-              ? 'bg-comic-cream text-comic-ink/50 cursor-not-allowed'
+              ? 'bg-white/[0.04] text-white/40 border border-white/10 cursor-not-allowed'
               : justAdded
-              ? 'bg-comic-green text-comic-ink shadow-comic'
+              ? 'bg-green-500/20 text-green-300 border border-green-500/40'
               : isAddingItem
-              ? 'bg-comic-yellow text-comic-ink shadow-comic-sm'
-              : 'bg-comic-pink text-white shadow-comic hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-comic-lg active:translate-x-1 active:translate-y-1 active:shadow-none'
+              ? 'bg-white/10 text-white border border-white/20'
+              : 'btn-pill-red'
           }`}
         >
           {isAddingItem ? (
             <>
-              <Loader2 className="h-5 w-5 animate-spin" strokeWidth={2.5} />
+              <Loader2 className="h-4 w-4 animate-spin" />
               Adding...
             </>
           ) : justAdded ? (
             <>
-              <Check className="h-5 w-5" strokeWidth={3} />
-              Added!
+              <Check className="h-4 w-4" />
+              Added to bag
             </>
           ) : isOutOfStock ? (
-            'Sold Out!'
+            'Sold out'
           ) : (
             <>
-              <Zap className="h-5 w-5" strokeWidth={2.5} fill="currentColor" />
-              Add to Bag!
+              <ShoppingBag className="h-4 w-4" />
+              Add to bag
             </>
           )}
         </button>

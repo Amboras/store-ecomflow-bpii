@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { ArrowRight, Truck, Shield, RotateCcw, Zap, Star, Flame } from 'lucide-react'
+import { ArrowRight, Sparkles, Truck, Shield, RotateCcw } from 'lucide-react'
 import CollectionSection from '@/components/marketing/collection-section'
 import { useCollections } from '@/hooks/use-collections'
 import { trackMetaEvent } from '@/lib/meta-pixel'
@@ -23,146 +23,109 @@ export default function HomePage() {
     })
   }
 
-  const marqueeContent = (
-    <span className="flex items-center gap-8 px-4">
-      <Star className="h-5 w-5 fill-comic-yellow shrink-0" />
-      MEME GANG
-      <Star className="h-5 w-5 fill-comic-pink text-comic-pink shrink-0" />
-      FREE SHIPPING ₹999+
-      <Star className="h-5 w-5 fill-comic-yellow shrink-0" />
-      POW! BAM! WOW!
-      <Star className="h-5 w-5 fill-comic-pink text-comic-pink shrink-0" />
-      NEW DROPS WEEKLY
-      <Star className="h-5 w-5 fill-comic-yellow shrink-0" />
-    </span>
-  )
-
   return (
     <>
-      {/* HERO — comic splash page */}
-      <section className="relative bg-comic-yellow border-b-[3px] border-comic-ink overflow-hidden">
-        {/* Animated halftone overlay */}
-        <div className="absolute inset-0 halftone opacity-40 pointer-events-none animate-halftone-shift" />
-        {/* Diagonal stripes corner — animated */}
-        <div className="absolute -top-10 -left-10 w-48 h-48 stripes-black opacity-15 -rotate-12 pointer-events-none animate-stripes-shift" />
-        {/* Floating decorations */}
-        <div className="hidden lg:block absolute top-12 right-1/2 burst-tag bg-comic-green !text-comic-ink !text-xs animate-float pointer-events-none">
-          ZAP!
-        </div>
-        <div className="hidden lg:block absolute bottom-10 left-[42%] burst-tag bg-comic-blue !text-comic-ink !text-xs animate-bounce-hard pointer-events-none">
-          NEW!
+      {/* HERO */}
+      <section className="relative overflow-hidden">
+        {/* Red radial glow at center */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[80%] red-glow animate-glow-pulse" />
         </div>
 
-        <div className="container-custom relative grid lg:grid-cols-2 gap-10 items-center py-16 lg:py-24">
-          {/* Text Content */}
-          <div className="space-y-6 animate-fade-in-up relative z-10">
-            <div className="flex items-center gap-3 flex-wrap">
-              <span className="burst-tag animate-spin-slower">NEW DROP!</span>
-              <span className="inline-flex items-center gap-1 bg-comic-blue text-comic-ink font-heading text-sm uppercase tracking-wider px-3 py-1 border-[3px] border-comic-ink shadow-comic-sm animate-shimmy">
-                <Zap className="h-4 w-4 animate-ping-comic" strokeWidth={3} /> Hot Off The Press
-              </span>
-            </div>
-
-            <h1 className="font-heading text-6xl sm:text-7xl lg:text-8xl tracking-wider text-comic-ink leading-[0.95]">
-              <span className="inline-block bg-white border-[4px] border-comic-ink px-3 py-1 shadow-comic-lg -rotate-1 animate-tilt">MEMES</span>
-              <br />
-              <span className="inline-block mt-3">that hit</span>{' '}
-              <span className="inline-block bg-comic-pink text-white border-[4px] border-comic-ink px-3 py-1 shadow-comic-lg rotate-1 animate-wiggle-slow">DIFFERENT!</span>
-            </h1>
-
-            <div className="speech-bubble max-w-md animate-bounce-hard">
-              <p className="font-bold text-comic-ink text-lg">
-                Posters, figurines, books &amp; chaotic stuff for people who live online. Shop the vibe!
-              </p>
-            </div>
-
-            <div className="flex flex-wrap gap-4 pt-2">
-              <Link href="/products" className="btn-comic-pink text-base hover-jiggle" prefetch={true}>
-                <Flame className="h-5 w-5 animate-wiggle" strokeWidth={3} />
-                Shop The Drop
-                <ArrowRight className="h-5 w-5" strokeWidth={3} />
-              </Link>
-              <Link href="/about" className="btn-comic text-base hover-jiggle" prefetch={true}>
-                Our Story
-              </Link>
-            </div>
-          </div>
-
-          {/* Hero Visual — comic panel grid (each panel floats with its own rhythm) */}
-          <div className="relative">
-            <div className="grid grid-cols-2 gap-3 sm:gap-4">
-              {[
-                { rot: '-rotate-3', bg: 'bg-comic-pink', text: 'POW!', anim: 'animate-float', delay: '0s' },
-                { rot: 'rotate-2', bg: 'bg-comic-blue', text: 'BAM!', anim: 'animate-float', delay: '-0.8s' },
-                { rot: 'rotate-3', bg: 'bg-comic-green', text: 'WOW!', anim: 'animate-float', delay: '-1.6s' },
-                { rot: '-rotate-2', bg: 'bg-comic-yellow', text: 'BOOM!', anim: 'animate-float', delay: '-2.4s' },
-              ].map((panel, i) => (
-                <div
-                  key={i}
-                  className={`relative aspect-square ${panel.bg} border-[4px] border-comic-ink shadow-comic-lg ${panel.rot} flex items-center justify-center halftone ${panel.anim}`}
-                  style={{ animationDelay: panel.delay }}
-                >
-                  <span className="font-heading text-4xl sm:text-5xl lg:text-6xl text-comic-ink tracking-wider drop-shadow-[3px_3px_0_rgba(255,255,255,0.6)]">
-                    {panel.text}
-                  </span>
-                </div>
-              ))}
-            </div>
-            {/* Big star burst — spins! */}
-            <div className="absolute -top-6 -right-4 burst-tag bg-comic-yellow !text-comic-ink !text-base px-6 py-4 animate-spin-slow">
-              ON SALE!
-            </div>
-            {/* Smaller floating star */}
-            <div className="absolute -bottom-4 -left-4 burst-tag bg-comic-red !text-white !text-xs animate-bounce-hard">
-              HOT!
-            </div>
-          </div>
+        {/* Watermark giant letters in background */}
+        <div className="absolute inset-x-0 top-1/2 flex items-center justify-center pointer-events-none overflow-hidden">
+          <span className="watermark-text text-[28vw] leading-none whitespace-nowrap">
+            AURA
+          </span>
         </div>
-      </section>
 
-      {/* MARQUEE-style strip — actually scrolling now */}
-      <section className="bg-comic-ink text-comic-yellow border-b-[3px] border-comic-ink py-3 overflow-hidden">
-        <div className="flex animate-marquee whitespace-nowrap font-heading text-2xl uppercase tracking-widest">
-          <div className="flex shrink-0">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <span key={i} className="contents">{marqueeContent}</span>
-            ))}
-          </div>
-          <div className="flex shrink-0" aria-hidden="true">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <span key={i} className="contents">{marqueeContent}</span>
-            ))}
-          </div>
-        </div>
-      </section>
+        {/* Floating star dots */}
+        <div className="absolute top-20 left-[15%] w-1 h-1 rounded-full bg-white/60 animate-twinkle" />
+        <div className="absolute top-40 right-[20%] w-1.5 h-1.5 rounded-full bg-white/80 animate-twinkle" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-32 right-[35%] w-1 h-1 rounded-full bg-white/50 animate-twinkle" style={{ animationDelay: '2s' }} />
+        <div className="absolute bottom-40 left-[25%] w-1 h-1 rounded-full bg-white/70 animate-twinkle" style={{ animationDelay: '0.5s' }} />
 
-      {/* Featured products grid */}
-      <section className="py-section bg-comic-cream border-b-[3px] border-comic-ink relative overflow-hidden">
-        <div className="absolute top-10 left-6 burst-tag bg-comic-blue !text-comic-ink !text-xs animate-spin-slower hidden md:block">
-          BANGERS!
-        </div>
-        <div className="absolute top-20 right-8 burst-tag bg-comic-green !text-comic-ink !text-xs animate-bounce-hard hidden md:block">
-          FRESH!
-        </div>
-        <div className="container-custom relative">
-          <div className="text-center mb-12 space-y-3">
-            <span className="inline-block bg-comic-pink text-white font-heading text-sm uppercase tracking-widest px-4 py-1 border-[3px] border-comic-ink shadow-comic-sm -rotate-2 animate-wiggle">
-              Top Tier Picks
+        <div className="container-custom relative z-10 py-24 lg:py-32 text-center">
+          {/* Pill badge */}
+          <Link
+            href="/about"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-xs sm:text-sm text-white/80 backdrop-blur-sm hover:bg-white/[0.08] transition-all"
+          >
+            New collection live
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+
+          {/* Massive headline */}
+          <h1 className="mt-8 font-heading font-bold tracking-tighter text-white animate-fade-in-up">
+            <span className="block text-5xl sm:text-7xl lg:text-8xl">
+              Curated. Crafted.
             </span>
-            <h2 className="font-heading text-5xl sm:text-6xl tracking-wider text-comic-ink animate-fade-in-up">
-              FAN FAVORITES!
-            </h2>
-            <p className="font-bold text-comic-ink max-w-md mx-auto">
-              Certified bangers. The stuff your timeline actually wants.
-            </p>
+            <span className="block text-6xl sm:text-8xl lg:text-9xl mt-1">
+              Unforgettable.
+            </span>
+          </h1>
+
+          {/* Subheading */}
+          <p className="mt-8 text-base sm:text-lg text-white/70 max-w-2xl mx-auto leading-relaxed">
+            Discover products that go beyond the ordinary — built with care,
+            shipped with speed, designed for the people who notice the details.
+          </p>
+
+          {/* CTA buttons */}
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+            <Link href="/products" className="btn-pill" prefetch={true}>
+              Browse Shop
+            </Link>
+            <Link href="/collections" className="btn-pill-red" prefetch={true}>
+              Shop Now
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+
+          {/* Floating product preview cards */}
+          {products && products.length >= 2 && (
+            <div className="mt-20 relative max-w-4xl mx-auto h-[280px] sm:h-[360px] hidden md:block">
+              {/* Left tilted card */}
+              <div className="absolute left-0 top-8 w-56 lg:w-64 -rotate-6 animate-float-slow">
+                <FloatingProductCard product={products[0]} />
+              </div>
+              {/* Center card */}
+              <div className="absolute left-1/2 -translate-x-1/2 top-0 w-60 lg:w-72 z-10 animate-float-slow" style={{ animationDelay: '-1.5s' }}>
+                <FloatingProductCard product={products[1]} accent />
+              </div>
+              {/* Right tilted card */}
+              {products[2] && (
+                <div className="absolute right-0 top-8 w-56 lg:w-64 rotate-6 animate-float-slow" style={{ animationDelay: '-3s' }}>
+                  <FloatingProductCard product={products[2]} />
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Featured Products */}
+      <section className="relative py-section">
+        <div className="container-custom">
+          <div className="flex items-end justify-between mb-12 flex-wrap gap-4">
+            <div>
+              <p className="text-xs uppercase tracking-[0.2em] text-red-400 mb-3 font-medium">Featured</p>
+              <h2 className="font-heading font-bold text-3xl sm:text-5xl text-white tracking-tight">
+                Best sellers.
+              </h2>
+            </div>
+            <Link href="/products" className="text-sm text-white/60 hover:text-white transition-colors flex items-center gap-1.5 group" prefetch={true}>
+              View all
+              <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
+            </Link>
           </div>
 
           {products && products.length > 0 ? (
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {products.slice(0, 4).map((product: any, i: number) => (
                 <div
                   key={product.id}
-                  className="hover-jiggle animate-fade-in-up"
+                  className="animate-fade-in-up"
                   style={{ animationDelay: `${i * 0.08}s`, animationFillMode: 'backwards' }}
                 >
                   <ProductCard product={product} />
@@ -170,24 +133,17 @@ export default function HomePage() {
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="aspect-[3/4] card-comic animate-pulse" />
+                <div key={i} className="aspect-[3/4] card-aura animate-pulse" />
               ))}
             </div>
           )}
-
-          <div className="mt-10 text-center">
-            <Link href="/products" className="btn-comic-blue hover-jiggle" prefetch={true}>
-              See It All
-              <ArrowRight className="h-4 w-4 animate-shimmy" strokeWidth={3} />
-            </Link>
-          </div>
         </div>
       </section>
 
       {/* Collections from API */}
-      {isLoading ? null : collections && collections.length > 0 ? (
+      {!isLoading && collections && collections.length > 0 && (
         <>
           {collections.slice(0, 2).map((collection: { id: string; handle: string; title: string; metadata?: Record<string, unknown> }, index: number) => (
             <CollectionSection
@@ -197,64 +153,24 @@ export default function HomePage() {
             />
           ))}
         </>
-      ) : null}
-
-      {/* COMIC PANEL "About" Section — panels jiggle */}
-      <section className="py-section bg-comic-pink border-y-[3px] border-comic-ink relative overflow-hidden">
-        <div className="absolute inset-0 halftone opacity-30 pointer-events-none animate-halftone-shift" />
-        <div className="container-custom relative">
-          <div className="grid lg:grid-cols-3 gap-6 items-stretch">
-            {/* Panel 1 */}
-            <div className="card-comic p-6 bg-comic-yellow -rotate-1 hover-jiggle">
-              <div className="flex items-center gap-2 mb-3">
-                <span className="burst-tag !text-xs !px-2 !py-1 animate-spin-slower inline-block">PANEL 1</span>
-              </div>
-              <h3 className="font-heading text-3xl tracking-wider mb-2">THE PROBLEM!</h3>
-              <p className="font-bold text-comic-ink">
-                Boring stores selling boring stuff. Generic templates. No personality. NO FUN!
-              </p>
-            </div>
-            {/* Panel 2 */}
-            <div className="card-comic p-6 bg-white rotate-1 hover-jiggle">
-              <div className="flex items-center gap-2 mb-3">
-                <span className="burst-tag bg-comic-blue !text-xs !px-2 !py-1 animate-spin-slower inline-block" style={{ animationDelay: '-3s' }}>PANEL 2</span>
-              </div>
-              <h3 className="font-heading text-3xl tracking-wider mb-2">THE PLOT TWIST!</h3>
-              <p className="font-bold text-comic-ink">
-                We made a store packed with memes, vibes, and stuff that actually slaps. Built for the chronically online.
-              </p>
-            </div>
-            {/* Panel 3 */}
-            <div className="card-comic p-6 bg-comic-green -rotate-1 hover-jiggle">
-              <div className="flex items-center gap-2 mb-3">
-                <span className="burst-tag bg-comic-yellow !text-comic-ink !text-xs !px-2 !py-1 animate-spin-slower inline-block" style={{ animationDelay: '-6s' }}>PANEL 3</span>
-              </div>
-              <h3 className="font-heading text-3xl tracking-wider mb-2">THE WIN!</h3>
-              <p className="font-bold text-comic-ink">
-                Fast shipping, ridiculous quality, and a vibe that says "yes, I am that person."
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      )}
 
       {/* Trust bar */}
-      <section className="py-12 bg-comic-yellow border-b-[3px] border-comic-ink relative overflow-hidden">
-        <div className="absolute inset-0 halftone opacity-15 pointer-events-none animate-halftone-shift" />
-        <div className="container-custom relative">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <section className="relative py-section-sm border-y border-white/10">
+        <div className="container-custom">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { Icon: Truck, title: 'Free Shipping', sub: 'On orders over ₹999', bg: 'bg-comic-pink', tc: 'text-white' },
-              { Icon: RotateCcw, title: 'Easy Returns', sub: '30-day no-drama policy', bg: 'bg-white', tc: 'text-comic-ink' },
-              { Icon: Shield, title: 'Secure Checkout', sub: 'Lock & key vibes only', bg: 'bg-comic-blue', tc: 'text-comic-ink' },
-            ].map(({ Icon, title, sub, bg, tc }, i) => (
-              <div key={i} className={`flex items-center gap-4 ${bg} ${tc} border-[3px] border-comic-ink p-4 shadow-comic-sm hover-jiggle`}>
-                <div className="flex-shrink-0 p-2 border-[3px] border-comic-ink bg-comic-yellow text-comic-ink animate-bounce-hard" style={{ animationDelay: `${i * 0.2}s` }}>
-                  <Icon className="h-6 w-6" strokeWidth={2.5} />
+              { Icon: Truck, title: 'Fast Shipping', sub: 'Free over ₹999' },
+              { Icon: RotateCcw, title: 'Easy Returns', sub: '30-day policy' },
+              { Icon: Shield, title: 'Secure Checkout', sub: '256-bit SSL' },
+            ].map(({ Icon, title, sub }, i) => (
+              <div key={i} className="flex items-center gap-4">
+                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-white/[0.04] border border-white/10 flex items-center justify-center">
+                  <Icon className="h-5 w-5 text-red-400" strokeWidth={1.5} />
                 </div>
                 <div>
-                  <p className="font-heading text-xl uppercase tracking-wide">{title}</p>
-                  <p className="text-sm font-bold">{sub}</p>
+                  <p className="font-semibold text-white">{title}</p>
+                  <p className="text-sm text-white/50">{sub}</p>
                 </div>
               </div>
             ))}
@@ -262,38 +178,95 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Newsletter — animated halftone background */}
-      <section className="py-section bg-comic-blue border-b-[3px] border-comic-ink relative overflow-hidden">
-        <div className="absolute inset-0 halftone opacity-25 pointer-events-none animate-halftone-shift" />
-        {/* Floating bursts */}
-        <div className="absolute top-10 left-10 burst-tag bg-comic-yellow !text-comic-ink !text-xs animate-float hidden md:block">
-          PSST!
-        </div>
-        <div className="absolute bottom-10 right-12 burst-tag bg-comic-pink !text-white !text-xs animate-float hidden md:block" style={{ animationDelay: '-1.5s' }}>
-          DEAL!
-        </div>
-        <div className="container-custom relative max-w-2xl text-center">
-          <span className="burst-tag mb-4 inline-block animate-spin-slow">JOIN US!</span>
-          <h2 className="font-heading text-5xl sm:text-6xl tracking-wider text-comic-ink mt-4 animate-fade-in-up">
-            DON'T MISS THE DROP!
+      {/* Story / Value section */}
+      <section className="relative py-section overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80%] h-full red-glow opacity-40 pointer-events-none" />
+        <div className="container-custom relative max-w-4xl text-center">
+          <p className="text-xs uppercase tracking-[0.2em] text-red-400 mb-3 font-medium">Our story</p>
+          <h2 className="font-heading font-bold text-4xl sm:text-6xl text-white tracking-tight leading-[1.05]">
+            Designed with intention.<br />
+            <span className="text-white/40">Shipped with care.</span>
           </h2>
-          <p className="mt-4 font-bold text-comic-ink text-lg">
-            New memes, new merch, exclusive deals. Straight to your inbox. No spam — pinky promise.
+          <p className="mt-8 text-lg text-white/60 max-w-2xl mx-auto leading-relaxed">
+            Every product in our store earns its place. We don&apos;t do filler. We don&apos;t do fast trends.
+            We curate pieces built to last and ship them to you fast.
           </p>
-          <form className="mt-8 flex flex-col sm:flex-row gap-3 max-w-md mx-auto" onSubmit={handleNewsletterSubmit}>
+          <Link href="/about" className="mt-10 btn-pill inline-flex" prefetch={true}>
+            Learn more
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+      </section>
+
+      {/* Newsletter */}
+      <section className="relative py-section border-t border-white/10 overflow-hidden">
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[60%] h-[60%] red-glow opacity-50 pointer-events-none" />
+        <div className="container-custom relative max-w-2xl text-center">
+          <Sparkles className="h-7 w-7 text-red-400 mx-auto mb-4" strokeWidth={1.5} />
+          <h2 className="font-heading font-bold text-3xl sm:text-5xl text-white tracking-tight">
+            Stay in the loop.
+          </h2>
+          <p className="mt-4 text-white/60">
+            Get early access to drops, exclusive offers, and new collections.
+          </p>
+          <form className="mt-10 flex flex-col sm:flex-row gap-3 max-w-md mx-auto" onSubmit={handleNewsletterSubmit}>
             <input
               type="email"
               value={newsletterEmail}
               onChange={(e) => setNewsletterEmail(e.target.value)}
               placeholder="your@email.com"
-              className="flex-1 border-[3px] border-comic-ink bg-white px-4 py-3 text-base font-bold placeholder:text-muted-foreground focus:outline-none focus:shadow-comic-sm transition-shadow"
+              required
+              className="flex-1 rounded-full bg-white/[0.04] border border-white/10 px-5 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-red-500/50 focus:bg-white/[0.06] transition-all"
             />
-            <button type="submit" className="btn-comic-pink text-base whitespace-nowrap hover-jiggle">
-              Sign Me Up!
+            <button type="submit" className="btn-pill-red whitespace-nowrap">
+              Subscribe
             </button>
           </form>
+          <p className="mt-4 text-xs text-white/30">
+            No spam. Unsubscribe anytime.
+          </p>
         </div>
       </section>
     </>
+  )
+}
+
+// Floating product preview card for the hero (used 3x with rotation)
+function FloatingProductCard({ product, accent = false }: { product: any; accent?: boolean }) {
+  const variant = product.variants?.[0]
+  const price = variant?.calculated_price?.calculated_amount
+  const currency = variant?.calculated_price?.currency_code || 'inr'
+
+  const formatted = price != null
+    ? new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: currency.toUpperCase(),
+        maximumFractionDigits: 0,
+      }).format(price / 100)
+    : ''
+
+  return (
+    <Link
+      href={`/products/${product.handle}`}
+      prefetch={true}
+      className={`block card-glass overflow-hidden ${accent ? 'shadow-glow-red' : ''} hover:scale-105 transition-transform duration-500`}
+    >
+      <div className="relative aspect-[3/4] bg-white/5 overflow-hidden">
+        {product.thumbnail && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={product.thumbnail}
+            alt={product.title}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        )}
+      </div>
+      <div className="p-3 sm:p-4">
+        <p className="text-xs sm:text-sm text-white truncate">{product.title}</p>
+        {formatted && (
+          <p className="text-xs text-red-400 mt-1">{formatted}</p>
+        )}
+      </div>
+    </Link>
   )
 }

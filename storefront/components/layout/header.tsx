@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { Search, ShoppingBag, User, Menu, X, LogIn } from 'lucide-react'
 import { useCart } from '@/hooks/use-cart'
 import { useAuth } from '@/hooks/use-auth'
@@ -11,6 +12,7 @@ import { useCollections } from '@/hooks/use-collections'
 export default function Header() {
   const { itemCount } = useCart()
   const { isLoggedIn } = useAuth()
+  const pathname = usePathname()
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
@@ -25,14 +27,10 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Focus close button when mobile menu opens
   useEffect(() => {
-    if (isMobileMenuOpen) {
-      mobileMenuCloseRef.current?.focus()
-    }
+    if (isMobileMenuOpen) mobileMenuCloseRef.current?.focus()
   }, [isMobileMenuOpen])
 
-  // Close mobile menu on Escape
   useEffect(() => {
     if (!isMobileMenuOpen) return
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -42,7 +40,6 @@ export default function Header() {
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [isMobileMenuOpen])
 
-  // Focus trap for mobile menu
   const handleMobileMenuKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key !== 'Tab' || !mobileMenuRef.current) return
     const focusable = mobileMenuRef.current.querySelectorAll<HTMLElement>(
@@ -60,11 +57,22 @@ export default function Header() {
     }
   }, [])
 
+  const navItems = [
+    { label: 'Home', href: '/' },
+    { label: 'Shop', href: '/products' },
+    ...(collections?.slice(0, 3).map((c: any) => ({
+      label: c.title,
+      href: `/collections/${c.handle}`,
+    })) || []),
+  ]
+
   return (
     <>
       <header
-        className={`sticky top-0 z-40 w-full border-b-[3px] border-comic-ink transition-all duration-300 ${
-          isScrolled ? 'bg-comic-yellow shadow-comic-sm' : 'bg-comic-yellow'
+        className={`sticky top-0 z-40 w-full transition-all duration-300 ${
+          isScrolled
+            ? 'bg-black/70 backdrop-blur-xl border-b border-white/10'
+            : 'bg-transparent'
         }`}
       >
         <div className="container-custom">
@@ -72,64 +80,68 @@ export default function Header() {
             {/* Mobile menu toggle */}
             <button
               onClick={() => setIsMobileMenuOpen(true)}
-              className="p-2 -ml-2 lg:hidden border-[3px] border-comic-ink bg-white shadow-comic-sm hover:-translate-y-0.5 transition-transform"
+              className="p-2 -ml-2 lg:hidden rounded-full text-white/80 hover:text-white hover:bg-white/5 transition-colors"
               aria-label="Open menu"
             >
               <Menu className="h-5 w-5" />
             </button>
 
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-2 group">
-              <span className="inline-block font-heading text-3xl sm:text-4xl bg-comic-pink text-white border-[3px] border-comic-ink px-4 py-1 shadow-comic-sm -rotate-2 group-hover:rotate-0 transition-transform tracking-wider animate-wiggle-slow">
-                MEMEMART!
+            {/* Logo — first letter red, rest white */}
+            <Link href="/" className="flex items-center group">
+              <span className="font-heading font-bold text-2xl tracking-tight">
+                <span className="text-red-500">A</span>
+                <span className="text-white">URA</span>
               </span>
             </Link>
 
-            {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-2">
-              <Link
-                href="/products"
-                className="font-heading text-lg uppercase tracking-wide px-3 py-1 border-[3px] border-transparent hover:border-comic-ink hover:bg-white transition-colors"
-                prefetch={true}
-              >
-                Shop All
-              </Link>
-              {collections?.slice(0, 3).map((collection: any) => (
-                <Link
-                  key={collection.id}
-                  href={`/collections/${collection.handle}`}
-                  className="font-heading text-lg uppercase tracking-wide px-3 py-1 border-[3px] border-transparent hover:border-comic-ink hover:bg-white transition-colors"
-                  prefetch={true}
-                >
-                  {collection.title}
-                </Link>
-              ))}
+            {/* Desktop Navigation — pill container */}
+            <nav className="hidden lg:flex items-center bg-white/[0.03] border border-white/10 rounded-full px-2 py-1.5 backdrop-blur-md">
+              {navItems.map((item) => {
+                const isActive =
+                  item.href === '/'
+                    ? pathname === '/'
+                    : pathname.startsWith(item.href)
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    prefetch={true}
+                    className={`px-5 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
+                      isActive
+                        ? 'bg-white/10 text-white shadow-inset-border'
+                        : 'text-white/70 hover:text-white hover:bg-white/[0.05]'
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                )
+              })}
             </nav>
 
             {/* Actions */}
             <div className="flex items-center gap-2">
               <Link
                 href="/search"
-                className="p-2 border-[3px] border-comic-ink bg-white shadow-comic-sm hover:-translate-y-0.5 transition-transform"
+                className="p-2.5 rounded-full text-white/70 hover:text-white hover:bg-white/5 transition-colors"
                 aria-label="Search"
               >
-                <Search className="h-4 w-4" strokeWidth={2.5} />
+                <Search className="h-4 w-4" strokeWidth={2} />
               </Link>
               <Link
                 href={isLoggedIn ? '/account' : '/auth/login'}
-                className="p-2 border-[3px] border-comic-ink bg-white shadow-comic-sm hover:-translate-y-0.5 transition-transform hidden sm:block"
+                className="p-2.5 rounded-full text-white/70 hover:text-white hover:bg-white/5 transition-colors hidden sm:block"
                 aria-label={isLoggedIn ? 'Account' : 'Sign in'}
               >
-                {isLoggedIn ? <User className="h-4 w-4" strokeWidth={2.5} /> : <LogIn className="h-4 w-4" strokeWidth={2.5} />}
+                {isLoggedIn ? <User className="h-4 w-4" strokeWidth={2} /> : <LogIn className="h-4 w-4" strokeWidth={2} />}
               </Link>
               <button
                 onClick={() => setIsCartOpen(true)}
-                className="relative p-2 border-[3px] border-comic-ink bg-comic-pink text-white shadow-comic-sm hover:-translate-y-0.5 transition-transform"
+                className="relative p-2.5 rounded-full text-white/70 hover:text-white hover:bg-white/5 transition-colors"
                 aria-label="Shopping bag"
               >
-                <ShoppingBag className="h-4 w-4" strokeWidth={2.5} />
+                <ShoppingBag className="h-4 w-4" strokeWidth={2} />
                 {itemCount > 0 && (
-                  <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-comic-yellow border-2 border-comic-ink text-[10px] font-bold text-comic-ink animate-ping-comic">
+                  <span className="absolute top-0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-medium text-white">
                     {itemCount}
                   </span>
                 )}
@@ -143,7 +155,7 @@ export default function Header() {
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div
-            className="absolute inset-0 bg-black/40"
+            className="absolute inset-0 bg-black/80 backdrop-blur-md"
             onClick={() => setIsMobileMenuOpen(false)}
           />
           <div
@@ -152,53 +164,48 @@ export default function Header() {
             aria-modal="true"
             aria-label="Navigation menu"
             onKeyDown={handleMobileMenuKeyDown}
-            className="absolute inset-y-0 left-0 w-80 max-w-[85vw] bg-comic-yellow border-r-[3px] border-comic-ink animate-slide-in-right"
+            className="absolute inset-y-0 left-0 w-80 max-w-[85vw] bg-black border-r border-white/10 animate-slide-in-right"
           >
-            <div className="flex items-center justify-between p-4 border-b-[3px] border-comic-ink bg-comic-pink text-white">
-              <span className="font-heading text-2xl tracking-wider">MENU!</span>
+            <div className="flex items-center justify-between p-5 border-b border-white/10">
+              <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="font-heading font-bold text-2xl tracking-tight">
+                <span className="text-red-500">A</span>
+                <span className="text-white">URA</span>
+              </Link>
               <button
                 ref={mobileMenuCloseRef}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="p-2 border-[3px] border-comic-ink bg-white text-comic-ink"
+                className="p-2 rounded-full text-white/70 hover:text-white hover:bg-white/5"
                 aria-label="Close menu"
               >
-                <X className="h-5 w-5" strokeWidth={2.5} />
+                <X className="h-5 w-5" strokeWidth={2} />
               </button>
             </div>
-            <nav className="p-4 space-y-2">
-              <Link
-                href="/products"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="block py-3 px-4 font-heading text-xl uppercase tracking-wide bg-white border-[3px] border-comic-ink shadow-comic-sm"
-                prefetch={true}
-              >
-                Shop All
-              </Link>
-              {collections?.map((collection: any) => (
+            <nav className="p-5 space-y-1">
+              {navItems.map((item) => (
                 <Link
-                  key={collection.id}
-                  href={`/collections/${collection.handle}`}
+                  key={item.href}
+                  href={item.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="block py-3 px-4 font-heading text-xl uppercase tracking-wide bg-white border-[3px] border-comic-ink shadow-comic-sm"
+                  className="block py-3 px-4 text-base font-medium text-white/80 hover:text-white hover:bg-white/5 rounded-xl transition-colors"
                   prefetch={true}
                 >
-                  {collection.title}
+                  {item.label}
                 </Link>
               ))}
-              <div className="pt-4 space-y-2">
+              <div className="pt-4 mt-4 border-t border-white/10 space-y-1">
                 <Link
                   href={isLoggedIn ? '/account' : '/auth/login'}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="block py-2 px-4 font-bold uppercase tracking-wide text-comic-ink"
+                  className="block py-3 px-4 text-sm text-white/60 hover:text-white"
                 >
-                  {isLoggedIn ? '★ Account' : '★ Sign In'}
+                  {isLoggedIn ? 'Account' : 'Sign In'}
                 </Link>
                 <Link
                   href="/search"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="block py-2 px-4 font-bold uppercase tracking-wide text-comic-ink"
+                  className="block py-3 px-4 text-sm text-white/60 hover:text-white"
                 >
-                  ★ Search
+                  Search
                 </Link>
               </div>
             </nav>
@@ -206,7 +213,6 @@ export default function Header() {
         </div>
       )}
 
-      {/* Cart Drawer */}
       <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </>
   )

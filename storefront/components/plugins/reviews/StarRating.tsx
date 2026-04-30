@@ -4,15 +4,10 @@ import { Star } from 'lucide-react'
 import { useState } from 'react'
 
 export interface StarRatingProps {
-  /** Rating value from 0 to 5 (supports halves like 4.5) */
   rating: number
-  /** Visual size preset */
   size?: 'sm' | 'md' | 'lg'
-  /** If provided along with `interactive`, called when the user clicks a star */
   onRate?: (rating: number) => void
-  /** When true, stars are buttons and respond to hover/click */
   interactive?: boolean
-  /** Optional className on the wrapper */
   className?: string
 }
 
@@ -43,15 +38,14 @@ export default function StarRating({
     >
       {stars.map((value) => {
         const filled = active >= value
-        // Partial fill for non-interactive half ratings
         const partial = !interactive && !filled && active > value - 1 && active < value
         const fillPercent = partial ? Math.round((active - (value - 1)) * 100) : 0
 
         const Icon = (
           <span className={`relative inline-block ${sizeClass}`}>
             <Star
-              className={`${sizeClass} ${filled ? 'fill-comic-yellow text-comic-ink' : 'fill-transparent text-comic-ink/40'}`}
-              strokeWidth={2.5}
+              className={`${sizeClass} ${filled ? 'fill-red-500 text-red-500' : 'fill-transparent text-white/20'}`}
+              strokeWidth={2}
             />
             {partial && (
               <span
@@ -59,8 +53,8 @@ export default function StarRating({
                 style={{ width: `${fillPercent}%` }}
               >
                 <Star
-                  className={`${sizeClass} fill-comic-yellow text-comic-ink`}
-                  strokeWidth={2.5}
+                  className={`${sizeClass} fill-red-500 text-red-500`}
+                  strokeWidth={2}
                 />
               </span>
             )}
@@ -81,7 +75,7 @@ export default function StarRating({
             onClick={() => onRate?.(value)}
             onMouseEnter={() => setHover(value)}
             onMouseLeave={() => setHover(null)}
-            className="transition-transform hover:scale-125 focus:outline-none focus-visible:ring-2 focus-visible:ring-comic-pink rounded-sm"
+            className="transition-transform hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 rounded-sm"
           >
             {Icon}
           </button>

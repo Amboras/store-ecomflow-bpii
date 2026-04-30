@@ -1,6 +1,6 @@
 import './globals.css'
 import type { Metadata } from 'next'
-import { Bangers, Comic_Neue } from 'next/font/google'
+import { Outfit, Inter } from 'next/font/google'
 import { Providers } from './providers'
 import Header from '@/components/layout/header'
 import Footer from '@/components/layout/footer'
@@ -14,16 +14,16 @@ import dynamic from 'next/dynamic'
 
 const CookieConsent = dynamic(() => import('@/components/cookie-consent'))
 
-const heading = Bangers({
+const heading = Outfit({
   subsets: ['latin'],
-  weight: ['400'],
+  weight: ['400', '500', '600', '700', '800', '900'],
   variable: '--font-heading',
   display: 'swap',
 })
 
-const body = Comic_Neue({
+const body = Inter({
   subsets: ['latin'],
-  weight: ['400', '700'],
+  weight: ['400', '500', '600', '700'],
   variable: '--font-body',
   display: 'swap',
 })

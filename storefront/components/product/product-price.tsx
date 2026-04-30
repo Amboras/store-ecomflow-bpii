@@ -7,15 +7,10 @@ export interface VariantExtension {
 }
 
 interface ProductPriceProps {
-  /** Price amount in cents */
   amount: number | null
-  /** Currency code (e.g. 'eur', 'usd') */
   currency: string
-  /** Compare-at price in cents (for strikethrough) */
   compareAtPrice?: number | null
-  /** Whether this product/variant is sold out */
   soldOut?: boolean
-  /** 'card' for product listing, 'detail' for product detail page */
   size?: 'card' | 'detail'
 }
 
@@ -36,12 +31,12 @@ export default function ProductPrice({
 
   if (soldOut) {
     return (
-      <div className="flex items-baseline gap-1.5">
-        <span className={`${isCard ? 'text-sm' : 'text-xl font-heading font-semibold'} text-muted-foreground/40 line-through`}>
+      <div className="flex items-baseline gap-2">
+        <span className={`${isCard ? 'text-sm' : 'text-xl font-medium'} text-white/30 line-through`}>
           {formattedPrice}
         </span>
-        <span className={`${isCard ? 'text-xs' : 'text-sm'} font-semibold uppercase tracking-wide text-muted-foreground`}>
-          Sold Out
+        <span className={`${isCard ? 'text-xs' : 'text-sm'} text-white/40 uppercase tracking-wider`}>
+          Sold out
         </span>
       </div>
     )
@@ -49,11 +44,11 @@ export default function ProductPrice({
 
   if (hasDiscount) {
     return (
-      <div className="flex items-baseline gap-1.5">
-        <span className={`${isCard ? 'text-xs' : 'text-base'} text-muted-foreground line-through`}>
+      <div className="flex items-baseline gap-2">
+        <span className={`${isCard ? 'text-xs' : 'text-lg'} text-white/40 line-through`}>
           {formattedCompareAt}
         </span>
-        <span className={`${isCard ? 'text-sm' : 'text-2xl'} font-semibold text-red-600 ${!isCard ? 'font-heading' : ''}`}>
+        <span className={`${isCard ? 'text-sm' : 'text-2xl'} font-semibold text-red-400`}>
           {formattedPrice}
         </span>
       </div>
@@ -61,11 +56,9 @@ export default function ProductPrice({
   }
 
   return (
-    <div className="flex items-baseline">
-      <span className={`${isCard ? 'text-sm text-muted-foreground' : 'text-xl font-heading font-semibold'}`}>
-        {formattedPrice}
-      </span>
-    </div>
+    <span className={`${isCard ? 'text-sm text-white/70' : 'text-2xl font-semibold text-white'}`}>
+      {formattedPrice}
+    </span>
   )
 }
 

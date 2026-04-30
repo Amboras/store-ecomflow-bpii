@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
-export const revalidate = 3600 // ISR: revalidate every hour
+export const revalidate = 3600
 import { medusaServerClient } from '@/lib/medusa-client'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -104,31 +104,30 @@ export default async function ProductPage({
     ...(product.images || []).filter((img: { url: string }) => img.url !== product.thumbnail),
   ]
 
-  // Use placeholder if no images
   const displayImages = allImages.length > 0
     ? allImages
     : [{ url: getProductPlaceholder(product.id) }]
 
   return (
     <>
-      {/* Breadcrumbs — comic strip style */}
-      <div className="border-b-[3px] border-comic-ink bg-comic-yellow">
-        <div className="container-custom py-3">
-          <nav className="flex items-center gap-2 text-xs font-heading uppercase tracking-wider text-comic-ink">
-            <Link href="/" className="hover:text-comic-pink transition-colors">Home</Link>
-            <ChevronRight className="h-3 w-3" strokeWidth={3} />
-            <Link href="/products" className="hover:text-comic-pink transition-colors">Shop</Link>
-            <ChevronRight className="h-3 w-3" strokeWidth={3} />
-            <span className="text-comic-pink truncate max-w-[200px] sm:max-w-none">{product.title}</span>
+      {/* Breadcrumbs */}
+      <div className="border-b border-white/10">
+        <div className="container-custom py-4">
+          <nav className="flex items-center gap-2 text-xs text-white/50">
+            <Link href="/" className="hover:text-white transition-colors">Home</Link>
+            <ChevronRight className="h-3 w-3" />
+            <Link href="/products" className="hover:text-white transition-colors">Shop</Link>
+            <ChevronRight className="h-3 w-3" />
+            <span className="text-white/80 truncate max-w-[200px] sm:max-w-none">{product.title}</span>
           </nav>
         </div>
       </div>
 
-      <div className="container-custom py-8 lg:py-12">
+      <div className="container-custom py-12 lg:py-16">
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
-          {/* Product Images — comic panel layout */}
-          <div className="space-y-4">
-            <div className="relative aspect-[3/4] overflow-hidden card-comic bg-comic-cream">
+          {/* Product Images */}
+          <div className="space-y-3">
+            <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-white/[0.02] border border-white/10">
               <Image
                 src={displayImages[0].url}
                 alt={product.title}
@@ -137,8 +136,8 @@ export default async function ProductPage({
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"
               />
-              {/* Comic "POW!" sticker on the corner */}
-              <div className="absolute top-4 left-4 burst-tag !text-xs">NEW!</div>
+              {/* Subtle gradient */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
             </div>
 
             {displayImages.length > 1 && (
@@ -146,7 +145,7 @@ export default async function ProductPage({
                 {displayImages.slice(1, 5).map((image: { url: string }, idx: number) => (
                   <div
                     key={idx}
-                    className="relative aspect-[3/4] overflow-hidden card-comic bg-comic-cream hover:-translate-y-0.5 hover:shadow-comic-lg transition-all duration-150"
+                    className="relative aspect-square overflow-hidden rounded-xl bg-white/[0.02] border border-white/10 hover:border-white/30 transition-colors cursor-pointer"
                   >
                     <Image
                       src={image.url}
@@ -162,15 +161,14 @@ export default async function ProductPage({
           </div>
 
           {/* Product Info */}
-          <div className="lg:sticky lg:top-24 lg:self-start space-y-6">
-            {/* Title in a speech bubble */}
+          <div className="lg:sticky lg:top-24 lg:self-start space-y-8">
             <div>
               {product.subtitle && (
-                <p className="inline-block bg-comic-pink text-white font-heading uppercase tracking-wider text-xs px-3 py-1 border-[3px] border-comic-ink shadow-comic-sm mb-3">
+                <p className="text-xs uppercase tracking-[0.2em] text-red-400 mb-3 font-medium">
                   {product.subtitle}
                 </p>
               )}
-              <h1 className="text-h2 font-heading uppercase tracking-wide text-comic-ink leading-tight">
+              <h1 className="font-heading font-bold text-3xl sm:text-4xl lg:text-5xl text-white tracking-tight leading-tight">
                 {product.title}
               </h1>
             </div>
@@ -179,30 +177,28 @@ export default async function ProductPage({
               productId={product.id}
               productTitle={product.title}
               variantId={product.variants?.[0]?.id || null}
-              currency={product.variants?.[0]?.calculated_price?.currency_code || 'usd'}
+              currency={product.variants?.[0]?.calculated_price?.currency_code || 'inr'}
               value={product.variants?.[0]?.calculated_price?.calculated_amount ?? null}
             />
 
-            {/* Variant Selector + Price + Add to Cart */}
             <ProductActions product={product} variantExtensions={variantExtensions} />
 
-            {/* Trust Signals — comic badges */}
-            <div className="grid grid-cols-3 gap-3 pt-6 border-t-[3px] border-comic-ink border-dashed">
-              <div className="bg-comic-yellow border-[3px] border-comic-ink shadow-comic-sm p-3 text-center">
-                <Truck className="h-5 w-5 mx-auto mb-1.5 text-comic-ink" strokeWidth={2.5} />
-                <p className="text-[10px] sm:text-xs font-heading uppercase tracking-wide text-comic-ink">Free Ship!</p>
+            {/* Trust Signals */}
+            <div className="grid grid-cols-3 gap-3 pt-6 border-t border-white/10">
+              <div className="text-center">
+                <Truck className="h-5 w-5 mx-auto mb-2 text-red-400" strokeWidth={1.5} />
+                <p className="text-xs text-white/60">Free shipping</p>
               </div>
-              <div className="bg-comic-pink border-[3px] border-comic-ink shadow-comic-sm p-3 text-center">
-                <RotateCcw className="h-5 w-5 mx-auto mb-1.5 text-white" strokeWidth={2.5} />
-                <p className="text-[10px] sm:text-xs font-heading uppercase tracking-wide text-white">30 Days!</p>
+              <div className="text-center">
+                <RotateCcw className="h-5 w-5 mx-auto mb-2 text-red-400" strokeWidth={1.5} />
+                <p className="text-xs text-white/60">30-day returns</p>
               </div>
-              <div className="bg-comic-blue border-[3px] border-comic-ink shadow-comic-sm p-3 text-center">
-                <Shield className="h-5 w-5 mx-auto mb-1.5 text-comic-ink" strokeWidth={2.5} />
-                <p className="text-[10px] sm:text-xs font-heading uppercase tracking-wide text-comic-ink">Secure!</p>
+              <div className="text-center">
+                <Shield className="h-5 w-5 mx-auto mb-2 text-red-400" strokeWidth={1.5} />
+                <p className="text-xs text-white/60">Secure checkout</p>
               </div>
             </div>
 
-            {/* Accordion Sections */}
             <ProductAccordion
               description={product.description}
               details={product.metadata as Record<string, string> | undefined}
@@ -211,7 +207,6 @@ export default async function ProductPage({
         </div>
       </div>
 
-      {/* Customer Reviews — curated 3-card grid */}
       <CustomerReviewsGrid
         productId={product.id}
         productTitle={product.title}
@@ -225,7 +220,6 @@ export default async function ProductPage({
         currencyCode={product.variants?.[0]?.calculated_price?.currency_code ?? null}
       />
 
-      {/* Full reviews widget with stats + pagination */}
       <ReviewsWidget productId={product.id} />
     </>
   )
