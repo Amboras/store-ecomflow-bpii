@@ -60,11 +60,14 @@ export default function Header() {
   const navItems = [
     { label: 'Home', href: '/' },
     { label: 'Shop', href: '/products' },
-    ...(collections?.slice(0, 3).map((c: any) => ({
-      label: c.title,
-      href: `/collections/${c.handle}`,
-    })) || []),
+    { label: 'Drops', href: '/drops' },
+    { label: 'Discover', href: '/discover' },
+    { label: 'Gift', href: '/gift' },
+    { label: 'Rewards', href: '/rewards' },
   ]
+
+  // Suppress unused warning (collections kept for future use)
+  void collections
 
   return (
     <>

@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState } from 'react'
-import { ArrowRight, Sparkles, Truck, Shield, RotateCcw, Star, TrendingUp } from 'lucide-react'
+import { ArrowRight, Sparkles, Truck, Shield, RotateCcw, Star, TrendingUp, Flame, Brain, Gift, Crown } from 'lucide-react'
 import CollectionSection from '@/components/marketing/collection-section'
 import { useCollections } from '@/hooks/use-collections'
 import { trackMetaEvent } from '@/lib/meta-pixel'
@@ -280,6 +280,144 @@ export default function HomePage() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* THREE PROMISES — amboras-inspired structured panel */}
+      <section className="relative py-section">
+        <div className="container-custom">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 mb-14">
+            <div>
+              <p className="text-xs uppercase tracking-[0.2em] text-red-400 mb-3 font-medium">How we work</p>
+              <h2 className="font-heading font-bold text-3xl sm:text-5xl text-white tracking-tight leading-[1.05]">
+                Three promises. <span className="text-white/40">All kept.</span>
+              </h2>
+            </div>
+            <p className="lg:col-span-2 text-base sm:text-lg text-white/60 leading-relaxed lg:pt-12">
+              From the moment you land here to the moment your order arrives — we&apos;ve obsessed over the details so you don&apos;t have to. No surprises, no shortcuts.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {[
+              {
+                num: '01',
+                title: 'Curated, not catalogued',
+                desc: 'Every product earns its place. We say no to hundreds so you only see the few that matter.',
+                Icon: Sparkles,
+              },
+              {
+                num: '02',
+                title: 'Live in 10 minutes',
+                desc: 'From order to confirmation — one of the fastest checkouts on the planet, no friction.',
+                Icon: Brain,
+              },
+              {
+                num: '03',
+                title: 'Shipped with intent',
+                desc: 'Tracked from our hands to yours. Free shipping on orders over ₹999, always.',
+                Icon: Truck,
+              },
+            ].map((item) => (
+              <div key={item.num} className="card-aura p-7 group hover:bg-white/[0.04]">
+                <div className="flex items-center justify-between mb-6">
+                  <p className="font-heading font-bold text-5xl text-white/10">{item.num}</p>
+                  <div className="w-10 h-10 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center group-hover:bg-red-500/20 transition-colors">
+                    <item.Icon className="h-4 w-4 text-red-400" strokeWidth={1.5} />
+                  </div>
+                </div>
+                <h3 className="font-heading font-bold text-xl text-white mb-2">{item.title}</h3>
+                <p className="text-sm text-white/60 leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* PLATFORM TABS — amboras-inspired "AI runs everything" */}
+      <section className="relative py-section">
+        <div className="container-custom">
+          <div className="text-center mb-14">
+            <p className="text-xs uppercase tracking-[0.2em] text-red-400 mb-3 font-medium">Made for you</p>
+            <h2 className="font-heading font-bold text-3xl sm:text-5xl text-white tracking-tight leading-[1.05]">
+              One store. <span className="text-white/40">Everything you need.</span>
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            {[
+              { Icon: Flame, label: 'Drops', title: 'Limited releases, before they\u2019re gone', desc: 'Small-batch products that close when stock hits zero. Move fast.', href: '/drops', accent: 'red' },
+              { Icon: Brain, label: 'Discover', title: 'Smart picks, tailored to you', desc: 'Browse with intent. Filter by mood, budget, and what\u2019s loved.', href: '/discover', accent: 'red' },
+              { Icon: Gift, label: 'Gift Links', title: 'Send a gift in 30 seconds', desc: 'Pick a product, write a note, share a secret link. They claim, we ship.', href: '/gift', accent: 'red' },
+              { Icon: Crown, label: 'Rewards', title: 'Earn, save, vote on what\u2019s next', desc: 'Members shape the catalog. Every purchase counts toward perks.', href: '/rewards', accent: 'red' },
+            ].map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                prefetch={true}
+                className="group card-aura p-7 sm:p-9 hover:bg-white/[0.04] hover:border-white/20 transition-all relative overflow-hidden"
+              >
+                {/* Subtle red glow on hover */}
+                <div className="absolute -bottom-20 -right-20 w-60 h-60 rounded-full bg-red-500/10 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="relative">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center">
+                      <item.Icon className="h-4 w-4 text-red-400" strokeWidth={1.5} />
+                    </div>
+                    <p className="text-xs uppercase tracking-[0.2em] text-red-400 font-medium">{item.label}</p>
+                  </div>
+                  <h3 className="font-heading font-bold text-2xl text-white mb-2 leading-tight">{item.title}</h3>
+                  <p className="text-sm text-white/60 leading-relaxed mb-6">{item.desc}</p>
+                  <span className="inline-flex items-center gap-1.5 text-sm text-white group-hover:text-red-400 transition-colors">
+                    Open
+                    <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* STATS panel — amboras-inspired bold gradient block */}
+      <section className="relative py-section">
+        <div className="container-custom">
+          <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-red-500/15 via-red-900/5 to-transparent p-10 sm:p-16 relative overflow-hidden">
+            <div className="absolute inset-0 starfield opacity-40 pointer-events-none" />
+            <div className="relative grid grid-cols-1 sm:grid-cols-3 gap-10 sm:gap-6 text-center">
+              {[
+                { stat: '2 days', label: 'Average delivery time' },
+                { stat: '4.9 / 5', label: 'Rating across products' },
+                { stat: '10k+', label: 'Happy customers' },
+              ].map((item) => (
+                <div key={item.label}>
+                  <p className="font-heading font-bold text-5xl sm:text-6xl text-white tracking-tight">{item.stat}</p>
+                  <p className="mt-3 text-sm text-white/60 uppercase tracking-[0.2em]">{item.label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* TESTIMONIAL — amboras-inspired big quote */}
+      <section className="relative py-section">
+        <div className="container-custom">
+          <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.03] via-white/[0.02] to-transparent p-10 sm:p-16 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-1/2 h-full red-glow opacity-30 pointer-events-none" />
+            <div className="relative max-w-3xl">
+              <p className="font-heading text-3xl sm:text-5xl text-white leading-[1.15] tracking-tight">
+                &ldquo;Easily the best little shop I&apos;ve found this year. The drops are tight, the shipping is stupid-fast, and you can tell every product has a person behind it.&rdquo;
+              </p>
+              <div className="mt-8 flex items-center gap-4">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-red-500 to-red-700" />
+                <div>
+                  <p className="text-white font-medium">Aanya M.</p>
+                  <p className="text-sm text-white/40">Insider member · Bengaluru</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
