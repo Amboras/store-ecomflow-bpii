@@ -80,7 +80,7 @@ export default function Header() {
 
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2 group">
-              <span className="inline-block font-heading text-3xl sm:text-4xl bg-comic-pink text-white border-[3px] border-comic-ink px-4 py-1 shadow-comic-sm -rotate-2 group-hover:rotate-0 transition-transform tracking-wider">
+              <span className="inline-block font-heading text-3xl sm:text-4xl bg-comic-pink text-white border-[3px] border-comic-ink px-4 py-1 shadow-comic-sm -rotate-2 group-hover:rotate-0 transition-transform tracking-wider animate-wiggle-slow">
                 MEMEMART!
               </span>
             </Link>
@@ -129,7 +129,7 @@ export default function Header() {
               >
                 <ShoppingBag className="h-4 w-4" strokeWidth={2.5} />
                 {itemCount > 0 && (
-                  <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-comic-yellow border-2 border-comic-ink text-[10px] font-bold text-comic-ink">
+                  <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-comic-yellow border-2 border-comic-ink text-[10px] font-bold text-comic-ink animate-ping-comic">
                     {itemCount}
                   </span>
                 )}

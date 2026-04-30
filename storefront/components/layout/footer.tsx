@@ -31,22 +31,35 @@ export default function Footer() {
 
   return (
     <footer className="border-t-[3px] border-comic-ink bg-comic-ink text-comic-yellow relative overflow-hidden">
-      {/* Marquee strip on top */}
+      {/* Marquee strip on top — actually scrolls */}
       <div className="bg-comic-pink text-white border-b-[3px] border-comic-ink py-2 overflow-hidden">
-        <div className="flex items-center gap-6 whitespace-nowrap font-heading text-lg uppercase tracking-widest">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <span key={i} className="flex items-center gap-6">
-              <Star className="h-4 w-4 fill-white" />
-              MEMEMART <Star className="h-4 w-4 fill-white" />
-              POW! <Star className="h-4 w-4 fill-white" />
-              BAM! <Star className="h-4 w-4 fill-white" />
-              WOW!
-            </span>
-          ))}
+        <div className="flex animate-marquee-reverse whitespace-nowrap font-heading text-lg uppercase tracking-widest">
+          <div className="flex shrink-0 items-center gap-6 pr-6">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <span key={i} className="flex items-center gap-6">
+                <Star className="h-4 w-4 fill-white" />
+                MEMEMART <Star className="h-4 w-4 fill-white" />
+                POW! <Star className="h-4 w-4 fill-white" />
+                BAM! <Star className="h-4 w-4 fill-white" />
+                WOW!
+              </span>
+            ))}
+          </div>
+          <div className="flex shrink-0 items-center gap-6 pr-6" aria-hidden="true">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <span key={i} className="flex items-center gap-6">
+                <Star className="h-4 w-4 fill-white" />
+                MEMEMART <Star className="h-4 w-4 fill-white" />
+                POW! <Star className="h-4 w-4 fill-white" />
+                BAM! <Star className="h-4 w-4 fill-white" />
+                WOW!
+              </span>
+            ))}
+          </div>
         </div>
       </div>
 
-      <div className="absolute inset-0 halftone-yellow opacity-10 pointer-events-none" />
+      <div className="absolute inset-0 halftone-yellow opacity-10 pointer-events-none animate-halftone-shift" />
 
       <div className="container-custom relative py-section-sm">
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">

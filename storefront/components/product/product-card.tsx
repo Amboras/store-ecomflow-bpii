@@ -21,7 +21,7 @@ export default function ProductCard({ product, variantExtensions }: ProductCardP
 
   return (
     <Link href={`/products/${product.handle}`} className="group block" prefetch={true}>
-      <div className="card-comic bg-white overflow-hidden hover:-translate-y-1 hover:shadow-comic-lg transition-all duration-150">
+      <div className="card-comic bg-white overflow-hidden hover:-translate-y-1 hover:rotate-1 hover:shadow-comic-lg transition-all duration-200">
         {/* Product Image */}
         <div className="relative aspect-square overflow-hidden bg-comic-cream border-b-[3px] border-comic-ink">
           <Image
@@ -29,15 +29,15 @@ export default function ProductCard({ product, variantExtensions }: ProductCardP
             alt={product.title}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-            className={`object-cover transition-transform duration-300 ease-out group-hover:scale-105 ${soldOut ? 'opacity-50' : ''}`}
+            className={`object-cover transition-transform duration-500 ease-out group-hover:scale-110 group-hover:rotate-2 ${soldOut ? 'opacity-50' : ''}`}
           />
           {soldOut && (
-            <div className="absolute top-2 left-2 bg-comic-ink text-comic-yellow font-heading text-sm uppercase tracking-wider px-3 py-1 border-[3px] border-comic-ink shadow-comic-sm">
+            <div className="absolute top-2 left-2 bg-comic-ink text-comic-yellow font-heading text-sm uppercase tracking-wider px-3 py-1 border-[3px] border-comic-ink shadow-comic-sm animate-shake">
               Sold Out!
             </div>
           )}
           {!soldOut && onSale && (
-            <div className="absolute top-2 right-2 burst-tag !text-xs">SALE!</div>
+            <div className="absolute top-2 right-2 burst-tag !text-xs animate-spin-slow">SALE!</div>
           )}
         </div>
 
