@@ -1,8 +1,9 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useState } from 'react'
-import { ArrowRight, Sparkles, Truck, Shield, RotateCcw } from 'lucide-react'
+import { ArrowRight, Sparkles, Truck, Shield, RotateCcw, Star, TrendingUp } from 'lucide-react'
 import CollectionSection from '@/components/marketing/collection-section'
 import { useCollections } from '@/hooks/use-collections'
 import { trackMetaEvent } from '@/lib/meta-pixel'
@@ -23,20 +24,24 @@ export default function HomePage() {
     })
   }
 
+  // Featured product = first product with an image
+  const featuredProduct = products?.find((p: any) => p.thumbnail) || products?.[0]
+  const featuredVariant = featuredProduct?.variants?.[0]
+  const featuredPrice = featuredVariant?.calculated_price?.calculated_amount
+  const featuredCurrency = featuredVariant?.calculated_price?.currency_code || 'inr'
+  const formatPrice = (amount: number, currency: string) =>
+    new Intl.NumberFormat('en-IN', { style: 'currency', currency: currency.toUpperCase(), maximumFractionDigits: 0 }).format(amount)
+
+  // Two side products for the floating mini cards
+  const sideProducts = (products || []).filter((p: any) => p.id !== featuredProduct?.id && p.thumbnail).slice(0, 2)
+
   return (
     <>
       {/* HERO */}
-      <section className="relative overflow-hidden">
-        {/* Red radial glow at center */}
+      <section className="relative overflow-hidden pt-20 pb-32 lg:pb-48">
+        {/* Red radial glow at center bottom */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[80%] red-glow animate-glow-pulse" />
-        </div>
-
-        {/* Watermark giant letters in background */}
-        <div className="absolute inset-x-0 top-1/2 flex items-center justify-center pointer-events-none overflow-hidden">
-          <span className="watermark-text text-[28vw] leading-none whitespace-nowrap">
-            AURA
-          </span>
+          <div className="absolute top-[40%] left-1/2 -translate-x-1/2 w-[140%] h-[80%] red-glow animate-glow-pulse" />
         </div>
 
         {/* Floating star dots */}
@@ -44,35 +49,37 @@ export default function HomePage() {
         <div className="absolute top-40 right-[20%] w-1.5 h-1.5 rounded-full bg-white/80 animate-twinkle" style={{ animationDelay: '1s' }} />
         <div className="absolute top-32 right-[35%] w-1 h-1 rounded-full bg-white/50 animate-twinkle" style={{ animationDelay: '2s' }} />
         <div className="absolute bottom-40 left-[25%] w-1 h-1 rounded-full bg-white/70 animate-twinkle" style={{ animationDelay: '0.5s' }} />
+        <div className="absolute top-1/2 left-[8%] w-1 h-1 rounded-full bg-white/50 animate-twinkle" style={{ animationDelay: '1.5s' }} />
+        <div className="absolute top-1/3 right-[10%] w-1 h-1 rounded-full bg-white/60 animate-twinkle" style={{ animationDelay: '2.5s' }} />
 
-        <div className="container-custom relative z-10 py-24 lg:py-32 text-center">
+        <div className="container-custom relative z-10 text-center">
           {/* Pill badge */}
           <Link
-            href="/about"
+            href="/products"
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-xs sm:text-sm text-white/80 backdrop-blur-sm hover:bg-white/[0.08] transition-all"
           >
-            New collection live
+            New collection
             <ArrowRight className="h-3.5 w-3.5" />
           </Link>
 
-          {/* Massive headline */}
-          <h1 className="mt-8 font-heading font-bold tracking-tighter text-white animate-fade-in-up">
-            <span className="block text-4xl sm:text-7xl lg:text-8xl">
+          {/* Massive headline — multi-word with second line accent */}
+          <h1 className="mt-8 font-heading font-bold tracking-tighter text-white animate-fade-in-up leading-[0.95]">
+            <span className="block text-4xl sm:text-6xl lg:text-7xl">
               Curated. Crafted.
             </span>
-            <span className="block text-5xl sm:text-8xl lg:text-9xl mt-1">
+            <span className="block text-5xl sm:text-7xl lg:text-8xl mt-2">
               Unforgettable.
             </span>
           </h1>
 
           {/* Subheading */}
-          <p className="mt-8 text-base sm:text-lg text-white/70 max-w-2xl mx-auto leading-relaxed">
-            Discover products that go beyond the ordinary — built with care,
-            shipped with speed, designed for the people who notice the details.
+          <p className="mt-6 text-base sm:text-lg text-white/70 max-w-xl mx-auto leading-relaxed">
+            Discover products built with care, shipped with speed.
+            Designed for the people who notice the details.
           </p>
 
           {/* CTA buttons */}
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link href="/products" className="btn-pill" prefetch={true}>
               Browse Shop
             </Link>
@@ -82,12 +89,123 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* Scroll hint */}
-          <div className="mt-24 flex justify-center">
-            <div className="flex flex-col items-center gap-2 text-white/40 text-xs uppercase tracking-[0.2em]">
-              <span>Scroll</span>
-              <div className="w-px h-12 bg-gradient-to-b from-white/30 to-transparent" />
+          {/* HERO STAGE — fanned cards + center product + floating chips + watermark */}
+          <div className="relative mt-16 lg:mt-24 h-[420px] sm:h-[520px] lg:h-[600px] flex items-end justify-center">
+
+            {/* Watermark giant AURA letters */}
+            <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none overflow-hidden select-none">
+              <span className="watermark-text text-[18vw] sm:text-[16vw] lg:text-[14vw] leading-none whitespace-nowrap font-heading font-bold tracking-tighter">
+                <span className="text-red-600/30">A</span>
+                <span>U</span>
+                <span>R</span>
+                <span>A</span>
+              </span>
             </div>
+
+            {/* Fanned background cards — left side */}
+            <div className="hidden sm:block absolute bottom-0 left-[6%] w-[140px] lg:w-[180px] h-[260px] lg:h-[340px] rounded-3xl bg-gradient-to-b from-white/[0.04] to-transparent border border-white/10 -rotate-12 backdrop-blur-sm" style={{ transform: 'rotate(-14deg) translateY(20px)' }} />
+            <div className="hidden sm:block absolute bottom-0 left-[18%] w-[150px] lg:w-[200px] h-[280px] lg:h-[360px] rounded-3xl bg-gradient-to-b from-white/[0.05] to-transparent border border-white/10" style={{ transform: 'rotate(-7deg) translateY(10px)' }} />
+
+            {/* Fanned background cards — right side */}
+            <div className="hidden sm:block absolute bottom-0 right-[18%] w-[150px] lg:w-[200px] h-[280px] lg:h-[360px] rounded-3xl bg-gradient-to-b from-white/[0.05] to-transparent border border-white/10" style={{ transform: 'rotate(7deg) translateY(10px)' }} />
+            <div className="hidden sm:block absolute bottom-0 right-[6%] w-[140px] lg:w-[180px] h-[260px] lg:h-[340px] rounded-3xl bg-gradient-to-b from-white/[0.04] to-transparent border border-white/10" style={{ transform: 'rotate(14deg) translateY(20px)' }} />
+
+            {/* Center hero product card (the "phone") */}
+            {featuredProduct && (
+              <Link
+                href={`/products/${featuredProduct.handle}`}
+                prefetch={true}
+                className="relative z-20 w-[200px] sm:w-[240px] lg:w-[280px] h-[400px] sm:h-[480px] lg:h-[560px] rounded-[2.5rem] overflow-hidden border border-white/15 bg-gradient-to-b from-white/[0.06] to-white/[0.02] shadow-[0_30px_80px_-20px_rgba(239,68,68,0.5)] backdrop-blur-md group animate-float"
+              >
+                {/* Notch detail */}
+                <div className="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-5 rounded-full bg-black/60 z-10" />
+
+                {/* Status bar mockup */}
+                <div className="absolute top-0 inset-x-0 px-6 pt-2 pb-1 flex justify-between items-center text-[10px] text-white/80 z-10">
+                  <span className="font-medium">9:41</span>
+                  <div className="flex gap-1 items-center">
+                    <span className="text-[8px]">●●●</span>
+                  </div>
+                </div>
+
+                {/* Product image */}
+                <div className="absolute inset-0 pt-10">
+                  {featuredProduct.thumbnail ? (
+                    <Image
+                      src={featuredProduct.thumbnail}
+                      alt={featuredProduct.title}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      sizes="280px"
+                      priority
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-red-900/20 to-black" />
+                  )}
+                  {/* Gradient overlay for legibility */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
+                </div>
+
+                {/* Product info at bottom */}
+                <div className="absolute bottom-0 inset-x-0 p-5 z-10 text-left">
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-red-400 mb-1.5 font-medium">Featured</p>
+                  <p className="text-white font-semibold text-base leading-tight line-clamp-2">{featuredProduct.title}</p>
+                  {featuredPrice !== undefined && (
+                    <p className="mt-2 text-red-400 font-bold text-lg">{formatPrice(featuredPrice, featuredCurrency)}</p>
+                  )}
+                </div>
+              </Link>
+            )}
+
+            {/* Floating chip — top left (rating) */}
+            {featuredProduct && (
+              <div
+                className="absolute z-30 left-[18%] sm:left-[26%] lg:left-[30%] top-[18%] sm:top-[22%] animate-float-slow"
+                style={{ animationDelay: '0.5s' }}
+              >
+                <div className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/[0.06] border border-white/15 backdrop-blur-md shadow-[0_10px_30px_-5px_rgba(239,68,68,0.4)]">
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center">
+                    <Star className="h-4 w-4 text-white fill-white" />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-[10px] uppercase tracking-wider text-white/50 leading-none">Rating</p>
+                    <p className="text-white font-semibold text-sm leading-tight mt-0.5">4.9 / 5</p>
+                  </div>
+                  <span className="text-green-400 text-xs font-semibold">+12%</span>
+                </div>
+              </div>
+            )}
+
+            {/* Floating chip — bottom right (price/trending) */}
+            {sideProducts[0] && (
+              <div
+                className="absolute z-30 right-[14%] sm:right-[22%] lg:right-[26%] bottom-[28%] sm:bottom-[30%] animate-float"
+                style={{ animationDelay: '1s' }}
+              >
+                <div className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/[0.06] border border-white/15 backdrop-blur-md shadow-[0_10px_30px_-5px_rgba(239,68,68,0.4)]">
+                  <div className="w-9 h-9 rounded-xl overflow-hidden bg-white/5 flex-shrink-0 relative">
+                    {sideProducts[0].thumbnail && (
+                      <Image
+                        src={sideProducts[0].thumbnail}
+                        alt={sideProducts[0].title}
+                        fill
+                        className="object-cover"
+                        sizes="36px"
+                      />
+                    )}
+                  </div>
+                  <div className="text-left max-w-[120px]">
+                    <p className="text-white font-semibold text-sm leading-tight line-clamp-1">{sideProducts[0].title}</p>
+                    {sideProducts[0].variants?.[0]?.calculated_price?.calculated_amount !== undefined && (
+                      <p className="text-red-400 font-bold text-xs leading-tight mt-0.5">
+                        {formatPrice(sideProducts[0].variants[0].calculated_price.calculated_amount, sideProducts[0].variants[0].calculated_price.currency_code || 'inr')}
+                      </p>
+                    )}
+                  </div>
+                  <span className="text-green-400 text-[10px] font-semibold flex items-center gap-0.5"><TrendingUp className="h-3 w-3" />Hot</span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </section>
