@@ -57,10 +57,10 @@ export default function HomePage() {
 
           {/* Massive headline */}
           <h1 className="mt-8 font-heading font-bold tracking-tighter text-white animate-fade-in-up">
-            <span className="block text-5xl sm:text-7xl lg:text-8xl">
+            <span className="block text-4xl sm:text-7xl lg:text-8xl">
               Curated. Crafted.
             </span>
-            <span className="block text-6xl sm:text-8xl lg:text-9xl mt-1">
+            <span className="block text-5xl sm:text-8xl lg:text-9xl mt-1">
               Unforgettable.
             </span>
           </h1>
@@ -82,25 +82,13 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* Floating product preview cards */}
-          {products && products.length >= 2 && (
-            <div className="mt-20 relative max-w-4xl mx-auto h-[280px] sm:h-[360px] hidden md:block">
-              {/* Left tilted card */}
-              <div className="absolute left-0 top-8 w-56 lg:w-64 -rotate-6 animate-float-slow">
-                <FloatingProductCard product={products[0]} />
-              </div>
-              {/* Center card */}
-              <div className="absolute left-1/2 -translate-x-1/2 top-0 w-60 lg:w-72 z-10 animate-float-slow" style={{ animationDelay: '-1.5s' }}>
-                <FloatingProductCard product={products[1]} accent />
-              </div>
-              {/* Right tilted card */}
-              {products[2] && (
-                <div className="absolute right-0 top-8 w-56 lg:w-64 rotate-6 animate-float-slow" style={{ animationDelay: '-3s' }}>
-                  <FloatingProductCard product={products[2]} />
-                </div>
-              )}
+          {/* Scroll hint */}
+          <div className="mt-24 flex justify-center">
+            <div className="flex flex-col items-center gap-2 text-white/40 text-xs uppercase tracking-[0.2em]">
+              <span>Scroll</span>
+              <div className="w-px h-12 bg-gradient-to-b from-white/30 to-transparent" />
             </div>
-          )}
+          </div>
         </div>
       </section>
 
@@ -228,45 +216,5 @@ export default function HomePage() {
         </div>
       </section>
     </>
-  )
-}
-
-// Floating product preview card for the hero (used 3x with rotation)
-function FloatingProductCard({ product, accent = false }: { product: any; accent?: boolean }) {
-  const variant = product.variants?.[0]
-  const price = variant?.calculated_price?.calculated_amount
-  const currency = variant?.calculated_price?.currency_code || 'inr'
-
-  const formatted = price != null
-    ? new Intl.NumberFormat('en-IN', {
-        style: 'currency',
-        currency: currency.toUpperCase(),
-        maximumFractionDigits: 0,
-      }).format(price / 100)
-    : ''
-
-  return (
-    <Link
-      href={`/products/${product.handle}`}
-      prefetch={true}
-      className={`block card-glass overflow-hidden ${accent ? 'shadow-glow-red' : ''} hover:scale-105 transition-transform duration-500`}
-    >
-      <div className="relative aspect-[3/4] bg-white/5 overflow-hidden">
-        {product.thumbnail && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={product.thumbnail}
-            alt={product.title}
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-        )}
-      </div>
-      <div className="p-3 sm:p-4">
-        <p className="text-xs sm:text-sm text-white truncate">{product.title}</p>
-        {formatted && (
-          <p className="text-xs text-red-400 mt-1">{formatted}</p>
-        )}
-      </div>
-    </Link>
   )
 }
