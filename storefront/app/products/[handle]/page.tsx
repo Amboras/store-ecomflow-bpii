@@ -101,7 +101,7 @@ export default async function ProductPage({
 
   const allImages = [
     ...(product.thumbnail ? [{ url: product.thumbnail }] : []),
-    ...(product.images || []).filter((img: any) => img.url !== product.thumbnail),
+    ...(product.images || []).filter((img: { url: string }) => img.url !== product.thumbnail),
   ]
 
   // Use placeholder if no images
@@ -111,24 +111,24 @@ export default async function ProductPage({
 
   return (
     <>
-      {/* Breadcrumbs */}
-      <div className="border-b">
+      {/* Breadcrumbs — comic strip style */}
+      <div className="border-b-[3px] border-comic-ink bg-comic-yellow">
         <div className="container-custom py-3">
-          <nav className="flex items-center gap-2 text-xs text-muted-foreground">
-            <Link href="/" className="hover:text-foreground transition-colors">Home</Link>
-            <ChevronRight className="h-3 w-3" />
-            <Link href="/products" className="hover:text-foreground transition-colors">Shop</Link>
-            <ChevronRight className="h-3 w-3" />
-            <span className="text-foreground">{product.title}</span>
+          <nav className="flex items-center gap-2 text-xs font-heading uppercase tracking-wider text-comic-ink">
+            <Link href="/" className="hover:text-comic-pink transition-colors">Home</Link>
+            <ChevronRight className="h-3 w-3" strokeWidth={3} />
+            <Link href="/products" className="hover:text-comic-pink transition-colors">Shop</Link>
+            <ChevronRight className="h-3 w-3" strokeWidth={3} />
+            <span className="text-comic-pink truncate max-w-[200px] sm:max-w-none">{product.title}</span>
           </nav>
         </div>
       </div>
 
       <div className="container-custom py-8 lg:py-12">
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
-          {/* Product Images */}
-          <div className="space-y-3">
-            <div className="relative aspect-[3/4] overflow-hidden bg-muted rounded-sm">
+          {/* Product Images — comic panel layout */}
+          <div className="space-y-4">
+            <div className="relative aspect-[3/4] overflow-hidden card-comic bg-comic-cream">
               <Image
                 src={displayImages[0].url}
                 alt={product.title}
@@ -137,14 +137,16 @@ export default async function ProductPage({
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"
               />
+              {/* Comic "POW!" sticker on the corner */}
+              <div className="absolute top-4 left-4 burst-tag !text-xs">NEW!</div>
             </div>
 
             {displayImages.length > 1 && (
               <div className="grid grid-cols-4 gap-3">
-                {displayImages.slice(1, 5).map((image: any, idx: number) => (
+                {displayImages.slice(1, 5).map((image: { url: string }, idx: number) => (
                   <div
                     key={idx}
-                    className="relative aspect-[3/4] overflow-hidden bg-muted rounded-sm"
+                    className="relative aspect-[3/4] overflow-hidden card-comic bg-comic-cream hover:-translate-y-0.5 hover:shadow-comic-lg transition-all duration-150"
                   >
                     <Image
                       src={image.url}
@@ -161,14 +163,16 @@ export default async function ProductPage({
 
           {/* Product Info */}
           <div className="lg:sticky lg:top-24 lg:self-start space-y-6">
-            {/* Title & Subtitle */}
+            {/* Title in a speech bubble */}
             <div>
               {product.subtitle && (
-                <p className="text-sm uppercase tracking-[0.15em] text-muted-foreground mb-2">
+                <p className="inline-block bg-comic-pink text-white font-heading uppercase tracking-wider text-xs px-3 py-1 border-[3px] border-comic-ink shadow-comic-sm mb-3">
                   {product.subtitle}
                 </p>
               )}
-              <h1 className="text-h2 font-heading font-semibold">{product.title}</h1>
+              <h1 className="text-h2 font-heading uppercase tracking-wide text-comic-ink leading-tight">
+                {product.title}
+              </h1>
             </div>
 
             <ProductViewTracker
@@ -179,22 +183,22 @@ export default async function ProductPage({
               value={product.variants?.[0]?.calculated_price?.calculated_amount ?? null}
             />
 
-            {/* Variant Selector + Price + Add to Cart (client component) */}
+            {/* Variant Selector + Price + Add to Cart */}
             <ProductActions product={product} variantExtensions={variantExtensions} />
 
-            {/* Trust Signals */}
-            <div className="grid grid-cols-3 gap-4 py-6 border-t">
-              <div className="text-center">
-                <Truck className="h-5 w-5 mx-auto mb-1.5" strokeWidth={1.5} />
-                <p className="text-xs text-muted-foreground">Free Shipping</p>
+            {/* Trust Signals — comic badges */}
+            <div className="grid grid-cols-3 gap-3 pt-6 border-t-[3px] border-comic-ink border-dashed">
+              <div className="bg-comic-yellow border-[3px] border-comic-ink shadow-comic-sm p-3 text-center">
+                <Truck className="h-5 w-5 mx-auto mb-1.5 text-comic-ink" strokeWidth={2.5} />
+                <p className="text-[10px] sm:text-xs font-heading uppercase tracking-wide text-comic-ink">Free Ship!</p>
               </div>
-              <div className="text-center">
-                <RotateCcw className="h-5 w-5 mx-auto mb-1.5" strokeWidth={1.5} />
-                <p className="text-xs text-muted-foreground">30-Day Returns</p>
+              <div className="bg-comic-pink border-[3px] border-comic-ink shadow-comic-sm p-3 text-center">
+                <RotateCcw className="h-5 w-5 mx-auto mb-1.5 text-white" strokeWidth={2.5} />
+                <p className="text-[10px] sm:text-xs font-heading uppercase tracking-wide text-white">30 Days!</p>
               </div>
-              <div className="text-center">
-                <Shield className="h-5 w-5 mx-auto mb-1.5" strokeWidth={1.5} />
-                <p className="text-xs text-muted-foreground">Secure Checkout</p>
+              <div className="bg-comic-blue border-[3px] border-comic-ink shadow-comic-sm p-3 text-center">
+                <Shield className="h-5 w-5 mx-auto mb-1.5 text-comic-ink" strokeWidth={2.5} />
+                <p className="text-[10px] sm:text-xs font-heading uppercase tracking-wide text-comic-ink">Secure!</p>
               </div>
             </div>
 

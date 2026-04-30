@@ -50,8 +50,8 @@ export default function StarRating({
         const Icon = (
           <span className={`relative inline-block ${sizeClass}`}>
             <Star
-              className={`${sizeClass} ${filled ? 'fill-amber-400 text-amber-400' : 'fill-transparent text-muted-foreground/40'}`}
-              strokeWidth={1.5}
+              className={`${sizeClass} ${filled ? 'fill-comic-yellow text-comic-ink' : 'fill-transparent text-comic-ink/40'}`}
+              strokeWidth={2.5}
             />
             {partial && (
               <span
@@ -59,8 +59,8 @@ export default function StarRating({
                 style={{ width: `${fillPercent}%` }}
               >
                 <Star
-                  className={`${sizeClass} fill-amber-400 text-amber-400`}
-                  strokeWidth={1.5}
+                  className={`${sizeClass} fill-comic-yellow text-comic-ink`}
+                  strokeWidth={2.5}
                 />
               </span>
             )}
@@ -81,7 +81,7 @@ export default function StarRating({
             onClick={() => onRate?.(value)}
             onMouseEnter={() => setHover(value)}
             onMouseLeave={() => setHover(null)}
-            className="transition-transform hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-sm"
+            className="transition-transform hover:scale-125 focus:outline-none focus-visible:ring-2 focus-visible:ring-comic-pink rounded-sm"
           >
             {Icon}
           </button>

@@ -45,6 +45,7 @@
     background-image:
       radial-gradient(circle at 1px 1px, rgba(0,0,0,0.12) 1px, transparent 0);
     background-size: 18px 18px;
+    animation: halftone-shift 8s linear infinite;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -122,7 +123,26 @@
 
   /* Comic card */
   .card-comic {
-    @apply bg-white border-[3px] border-comic-ink shadow-comic;
+    @apply bg-white border-[3px] border-comic-ink shadow-comic transition-all duration-200;
+  }
+  .card-comic:hover {
+    @apply -translate-x-0.5 -translate-y-0.5 shadow-comic-lg;
+  }
+
+  /* Hover jiggle */
+  .hover-jiggle {
+    @apply transition-transform duration-150;
+  }
+  .hover-jiggle:hover {
+    animation: jiggle 0.4s ease-in-out 1;
+  }
+
+  /* Pulse-zoom on hover */
+  .hover-pop {
+    @apply transition-transform duration-200;
+  }
+  .hover-pop:hover {
+    @apply scale-110 rotate-3;
   }
 
   /* Speech bubble */

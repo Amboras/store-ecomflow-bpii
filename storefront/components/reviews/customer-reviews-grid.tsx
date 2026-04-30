@@ -2,10 +2,8 @@
 
 import { useMemo } from 'react'
 import Image from 'next/image'
-import { Package, Star, ChevronDown, Play, Camera } from 'lucide-react'
+import { Package, Star, Play, Camera, Zap } from 'lucide-react'
 import { useProductReviews } from '@amboras-dev/reviews'
-
-const ACCENT = '#E91E8C'
 
 export interface CustomerReviewsGridProps {
   productId: string
@@ -34,7 +32,7 @@ function formatMoney(amountInCents: number, currency: string): string {
 function formatPurchaseDate(iso: string): string {
   try {
     const d = new Date(iso)
-    return `Purchased on ${d.toLocaleDateString('en-US', { month: 'long' })}`
+    return `Bought in ${d.toLocaleDateString('en-US', { month: 'long' })}`
   } catch {
     return ''
   }
@@ -45,16 +43,14 @@ function getInitial(name: string): string {
   return trimmed ? trimmed.charAt(0).toUpperCase() : 'V'
 }
 
-/**
- * Stable HSL color from a string — used for avatar backgrounds.
- */
-function hashColor(seed: string): string {
+const COMIC_AVATAR_COLORS = ['#FFE600', '#FF3EA5', '#2EC4F1', '#7CFF6B', '#FF2E2E']
+
+function pickAvatarColor(seed: string): string {
   let hash = 0
   for (let i = 0; i < seed.length; i += 1) {
     hash = seed.charCodeAt(i) + ((hash << 5) - hash)
   }
-  const hue = Math.abs(hash) % 360
-  return `hsl(${hue}, 65%, 75%)`
+  return COMIC_AVATAR_COLORS[Math.abs(hash) % COMIC_AVATAR_COLORS.length]
 }
 
 interface ReviewMediaItem {
@@ -69,9 +65,11 @@ interface ReviewCardData {
   title: string | null
   customerName: string
   createdAt: string
-  /** Customer-uploaded media (photos/videos) on this review */
   media: ReviewMediaItem[]
 }
+
+const CARD_BG = ['bg-white', 'bg-comic-yellow', 'bg-comic-blue']
+const ROTATIONS = ['-rotate-1', 'rotate-1', '-rotate-[0.5deg]']
 
 function ReviewCard({
   review,
@@ -80,6 +78,7 @@ function ReviewCard({
   compareAtAmount,
   currencyCode,
   productThumbnail,
+  index,
 }: {
   review: ReviewCardData
   productTitle: string
@@ -87,21 +86,17 @@ function ReviewCard({
   compareAtAmount?: number | null
   currencyCode?: string | null
   productThumbnail?: string | null
+  index: number
 }) {
   const customerPhotos = review.media.filter((m) => m.type === 'image')
   const customerVideo = review.media.find((m) => m.type === 'video')
   const hasCustomerMedia = customerPhotos.length > 0 || !!customerVideo
 
-  // Hero image: prefer the customer's first photo, then a video poster
-  // placeholder, then the product thumbnail. Always render something.
   const heroImage =
     customerPhotos[0]?.url ||
     (customerVideo ? null : productThumbnail) ||
     productThumbnail ||
     null
-
-  // Extra customer photos beyond the first (rendered as a strip below hero)
-  const extraPhotos = customerPhotos.slice(1, 4)
 
   const showPriceRow =
     typeof priceAmount === 'number' &&
@@ -109,10 +104,16 @@ function ReviewCard({
     compareAtAmount > priceAmount &&
     !!currencyCode
 
+  const bg = CARD_BG[index % CARD_BG.length]
+  const rotation = ROTATIONS[index % ROTATIONS.length]
+  const avatarColor = pickAvatarColor(review.customerName)
+
   return (
-    <article className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
+    <article
+      className={`${bg} border-[3px] border-comic-ink shadow-comic ${rotation} flex flex-col overflow-hidden hover:rotate-0 hover:-translate-y-1 hover:shadow-comic-lg transition-all duration-200`}
+    >
       {/* Hero media area */}
-      <div className="relative aspect-[4/3] bg-gray-100 overflow-hidden">
+      <div className="relative aspect-[4/3] bg-comic-cream overflow-hidden border-b-[3px] border-comic-ink">
         {customerVideo ? (
           <video
             src={customerVideo.url}
@@ -132,49 +133,28 @@ function ReviewCard({
             loading="eager"
           />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center text-gray-300">
-            <Package className="h-10 w-10" strokeWidth={1.5} />
+          <div className="absolute inset-0 flex items-center justify-center text-comic-ink/30">
+            <Package className="h-12 w-12" strokeWidth={2.5} />
           </div>
         )}
 
         {/* Video play overlay */}
         {customerVideo && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="h-12 w-12 rounded-full bg-black/55 flex items-center justify-center">
-              <Play className="h-5 w-5 text-white" fill="white" strokeWidth={0} />
+            <div className="h-14 w-14 bg-comic-ink border-[3px] border-comic-ink shadow-comic flex items-center justify-center">
+              <Play className="h-6 w-6 text-comic-yellow" fill="#FFE600" strokeWidth={0} />
             </div>
           </div>
         )}
 
         {/* Customer photo badge */}
         {hasCustomerMedia && (
-          <span
-            className="absolute top-3 left-3 inline-flex items-center gap-1 rounded-full bg-white/95 backdrop-blur px-2.5 py-1 text-[11px] font-semibold shadow-sm"
-            style={{ color: ACCENT }}
-          >
+          <span className="absolute top-3 left-3 inline-flex items-center gap-1 bg-comic-pink text-white font-heading uppercase tracking-wide text-[10px] px-2 py-1 border-[2px] border-comic-ink shadow-comic-sm">
             <Camera className="h-3 w-3" strokeWidth={2.5} />
-            Customer photo
+            Real Photo!
           </span>
         )}
       </div>
-
-      {/* Extra photo strip (only when the customer uploaded multiple) */}
-      {extraPhotos.length > 0 && (
-        <div className="grid grid-cols-3 gap-1 p-1 bg-gray-50">
-          {extraPhotos.map((photo, idx) => (
-            <div key={photo.url} className="relative aspect-square overflow-hidden rounded">
-              <Image
-                src={photo.url}
-                alt={`Customer photo ${idx + 2}`}
-                fill
-                sizes="120px"
-                className="object-cover"
-                loading="eager"
-              />
-            </div>
-          ))}
-        </div>
-      )}
 
       {/* Body */}
       <div className="p-5 flex-1 flex flex-col">
@@ -185,73 +165,77 @@ function ReviewCard({
             return (
               <Star
                 key={s}
-                className="h-4 w-4"
+                className="h-5 w-5"
                 style={{
-                  color: filled ? ACCENT : '#E5E7EB',
-                  fill: filled ? ACCENT : 'transparent',
+                  color: filled ? '#0A0A0A' : '#0A0A0A',
+                  fill: filled ? '#FFE600' : 'transparent',
                 }}
-                strokeWidth={1.5}
+                strokeWidth={2.5}
               />
             )
           })}
         </div>
 
         {/* Reviewer name + verified buyer badge */}
-        <div className="flex items-start gap-2 mb-3">
-          <h3 className="font-semibold text-gray-900 text-base">
+        <div className="flex items-start gap-2 mb-3 flex-wrap">
+          <h3 className="font-heading uppercase tracking-wide text-comic-ink text-base">
             {review.customerName}
           </h3>
-          <span
-            className="inline-flex items-center gap-0.5 text-[11px] font-medium px-1.5 py-0.5 rounded border whitespace-nowrap mt-0.5"
-            style={{ color: ACCENT, borderColor: ACCENT }}
-          >
-            Verified Buyer
-            <ChevronDown className="h-3 w-3" strokeWidth={2} />
+          <span className="inline-flex items-center gap-1 text-[10px] font-heading uppercase tracking-wide bg-comic-ink text-comic-yellow px-2 py-0.5 border-[2px] border-comic-ink whitespace-nowrap">
+            <Zap className="h-3 w-3" strokeWidth={3} fill="#FFE600" />
+            Verified
           </span>
         </div>
 
+        {/* Review title */}
+        {review.title && (
+          <h4 className="font-heading uppercase tracking-wide text-comic-ink text-sm mb-2 leading-tight">
+            &ldquo;{review.title}&rdquo;
+          </h4>
+        )}
+
         {/* Review body */}
         {review.content && (
-          <p className="text-sm text-gray-600 leading-relaxed flex-1">
+          <p className="text-sm text-comic-ink leading-relaxed flex-1">
             {review.content}
           </p>
         )}
 
         {/* Footer */}
-        <div className="mt-5 pt-4 border-t border-gray-100">
+        <div className="mt-5 pt-4 border-t-[3px] border-comic-ink border-dashed">
           <div className="flex items-center gap-3">
             {/* Avatar */}
             <div
-              className="flex-shrink-0 h-9 w-9 rounded-full flex items-center justify-center text-sm font-semibold text-white"
-              style={{ backgroundColor: hashColor(review.customerName) }}
+              className="flex-shrink-0 h-10 w-10 border-[3px] border-comic-ink flex items-center justify-center font-heading text-comic-ink text-base shadow-comic-sm"
+              style={{ backgroundColor: avatarColor }}
               aria-hidden
             >
               {getInitial(review.customerName)}
             </div>
 
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-gray-900 truncate">
+              <p className="text-sm font-heading uppercase tracking-wide text-comic-ink truncate">
                 {productTitle}
               </p>
               {showPriceRow ? (
                 <div className="flex items-center gap-2 text-sm">
-                  <span className="text-gray-400 line-through">
+                  <span className="text-comic-ink/50 line-through font-heading">
                     {formatMoney(compareAtAmount, currencyCode)}
                   </span>
-                  <span className="font-bold" style={{ color: ACCENT }}>
+                  <span className="font-heading text-comic-pink">
                     {formatMoney(priceAmount, currencyCode)}
                   </span>
                 </div>
               ) : typeof priceAmount === 'number' && currencyCode ? (
-                <p className="text-sm font-bold" style={{ color: ACCENT }}>
+                <p className="text-sm font-heading text-comic-pink">
                   {formatMoney(priceAmount, currencyCode)}
                 </p>
               ) : null}
             </div>
           </div>
 
-          <div className="mt-3 flex items-center gap-1.5 text-xs text-gray-500">
-            <Package className="h-3.5 w-3.5" strokeWidth={1.75} />
+          <div className="mt-3 flex items-center gap-1.5 text-xs font-heading uppercase tracking-wide text-comic-ink/70">
+            <Package className="h-3.5 w-3.5" strokeWidth={2.5} />
             <span>{formatPurchaseDate(review.createdAt)}</span>
           </div>
         </div>
@@ -268,7 +252,6 @@ export default function CustomerReviewsGrid({
   compareAtAmount,
   currencyCode,
 }: CustomerReviewsGridProps) {
-  // Fetch first page, newest first — limit 3 to fill the grid.
   const { data, isLoading } = useProductReviews(productId, { page: 1, perPage: 3 })
 
   const reviews = data?.reviews ?? []
@@ -276,7 +259,6 @@ export default function CustomerReviewsGrid({
   const totalCount = data?.count ?? 0
 
   const cards = useMemo<ReviewCardData[]>(() => {
-    // Sort: reviews with photos/videos first, then by recency (preserved order from API).
     const sorted = [...reviews].sort((a, b) => {
       const aHas = (a.media?.length ?? 0) > 0 ? 1 : 0
       const bHas = (b.media?.length ?? 0) > 0 ? 1 : 0
@@ -294,7 +276,7 @@ export default function CustomerReviewsGrid({
         rating: r.rating,
         content: r.content ?? null,
         title: r.title ?? null,
-        customerName: rawName || 'Verified Customer',
+        customerName: rawName || 'Verified Hero',
         createdAt: r.created_at,
         media,
       }
@@ -303,14 +285,14 @@ export default function CustomerReviewsGrid({
 
   if (isLoading) {
     return (
-      <section className="bg-gray-50 py-14">
+      <section className="bg-comic-pink border-y-[4px] border-comic-ink py-14 halftone-pink">
         <div className="container-custom">
-          <div className="h-12 rounded-full bg-gray-200 animate-pulse max-w-2xl mx-auto" />
+          <div className="h-14 bg-white/40 border-[3px] border-comic-ink animate-pulse max-w-2xl mx-auto" />
           <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {[0, 1, 2].map((i) => (
               <div
                 key={i}
-                className="bg-white rounded-xl shadow-sm h-[480px] animate-pulse"
+                className="card-comic bg-white h-[480px] animate-pulse"
               />
             ))}
           </div>
@@ -322,28 +304,23 @@ export default function CustomerReviewsGrid({
   // Empty state
   if (totalCount === 0) {
     return (
-      <section className="bg-gray-50 py-14">
+      <section className="bg-comic-pink border-y-[4px] border-comic-ink py-14 halftone-pink">
         <div className="container-custom max-w-3xl text-center">
-          <h2 className="text-3xl md:text-4xl font-heading font-bold">
-            <span className="text-gray-900">Customer </span>
-            <span style={{ color: ACCENT }}>Reviews</span>
-          </h2>
-          <p className="mt-4 text-gray-600">
-            No reviews yet. Be the first to leave a review.
-          </p>
-          <a
-            href="#write-review"
-            className="mt-6 inline-flex items-center justify-center px-6 py-3 rounded-full text-white font-medium text-sm hover:opacity-90 transition-opacity"
-            style={{ backgroundColor: ACCENT }}
-          >
-            Write a review
-          </a>
+          <div className="inline-block bg-comic-yellow border-[4px] border-comic-ink shadow-comic px-6 py-3 -rotate-1 mb-6">
+            <h2 className="text-h3 font-heading uppercase tracking-wide text-comic-ink">
+              ★ Be the first reviewer ★
+            </h2>
+          </div>
+          <div className="card-comic bg-white p-8 max-w-xl mx-auto">
+            <p className="font-heading uppercase tracking-wide text-comic-ink">
+              No reviews yet — your story could be the first!
+            </p>
+          </div>
         </div>
       </section>
     )
   }
 
-  // Use real stats; fall back to sample average if total stats missing.
   const avg =
     stats.averageRating && stats.averageRating > 0
       ? stats.averageRating
@@ -352,31 +329,31 @@ export default function CustomerReviewsGrid({
   const formattedTotal = totalCount.toLocaleString('en-US')
 
   return (
-    <section className="bg-gray-50 py-14">
+    <section className="bg-comic-pink border-y-[4px] border-comic-ink py-14 halftone-pink">
       <div className="container-custom max-w-6xl">
-        {/* Pink stats banner */}
-        <div
-          className="rounded-2xl py-5 px-6 text-center text-white shadow-sm"
-          style={{ backgroundColor: ACCENT }}
-        >
-          <p className="font-semibold text-base md:text-lg flex items-center justify-center gap-2">
-            <Star className="h-5 w-5 fill-white" strokeWidth={0} />
-            <span>
-              Rated {avg.toFixed(1)}/5 based on {formattedTotal} review
-              {totalCount === 1 ? '' : 's'}
-            </span>
-          </p>
+        {/* Stats banner — comic ribbon */}
+        <div className="text-center mb-6">
+          <div className="inline-block bg-comic-yellow border-[4px] border-comic-ink shadow-comic px-6 py-3 -rotate-1">
+            <p className="font-heading uppercase tracking-wide text-base md:text-lg text-comic-ink flex items-center justify-center gap-2">
+              <Star className="h-5 w-5" fill="#0A0A0A" strokeWidth={0} />
+              <span>
+                {avg.toFixed(1)}/5 ★ {formattedTotal} review
+                {totalCount === 1 ? '' : 's'}
+              </span>
+              <Star className="h-5 w-5" fill="#0A0A0A" strokeWidth={0} />
+            </p>
+          </div>
         </div>
 
         {/* Title */}
-        <h2 className="mt-10 mb-8 text-center text-3xl md:text-4xl font-heading font-bold">
-          <span className="text-gray-900">Customer </span>
-          <span style={{ color: ACCENT }}>Reviews</span>
+        <h2 className="mt-6 mb-10 text-center text-h2 font-heading uppercase tracking-wide text-white"
+            style={{ textShadow: '4px 4px 0 #0A0A0A' }}>
+          What Heroes Are Saying!
         </h2>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {cards.map((review) => (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6">
+          {cards.map((review, idx) => (
             <ReviewCard
               key={review.id}
               review={review}
@@ -385,19 +362,19 @@ export default function CustomerReviewsGrid({
               compareAtAmount={compareAtAmount}
               currencyCode={currencyCode}
               productThumbnail={productThumbnail}
+              index={idx}
             />
           ))}
         </div>
 
         {/* View all link */}
         {totalCount > cards.length && (
-          <div className="mt-10 text-center">
+          <div className="mt-12 text-center">
             <a
               href="#all-reviews"
-              className="inline-block text-sm font-semibold underline-offset-4 hover:underline"
-              style={{ color: ACCENT }}
+              className="btn-comic-black !text-sm"
             >
-              View all {formattedTotal} reviews →
+              See all {formattedTotal} reviews →
             </a>
           </div>
         )}

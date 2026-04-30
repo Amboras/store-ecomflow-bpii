@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { useCart } from '@/hooks/use-cart'
-import { Minus, Plus, Check, Loader2 } from 'lucide-react'
+import { Minus, Plus, Check, Loader2, Zap } from 'lucide-react'
 import { toast } from 'sonner'
 import ProductPrice, { type VariantExtension } from './product-price'
 import { trackAddToCart } from '@/lib/analytics'
@@ -168,10 +168,10 @@ export default function ProductActions({ product, variantExtensions }: ProductAc
 
         return (
           <div key={optionId}>
-            <h3 className="text-xs uppercase tracking-widest font-semibold mb-3">
+            <h3 className="text-sm font-heading uppercase tracking-wide text-comic-ink mb-3">
               {option.title}
               {selectedValue && (
-                <span className="ml-2 normal-case tracking-normal font-normal text-muted-foreground">
+                <span className="ml-2 text-comic-pink">
                   — {selectedValue}
                 </span>
               )}
@@ -196,12 +196,12 @@ export default function ProductActions({ product, variantExtensions }: ProductAc
                     key={value}
                     onClick={() => handleOptionChange(optionId, value)}
                     disabled={!isAvailable}
-                    className={`min-w-[48px] px-4 py-2.5 text-sm border transition-all ${
+                    className={`min-w-[52px] px-4 py-2.5 text-sm font-heading uppercase tracking-wide border-[3px] border-comic-ink transition-all duration-150 ${
                       isSelected
-                        ? 'border-foreground bg-foreground text-background'
+                        ? 'bg-comic-ink text-comic-yellow shadow-comic-sm -translate-x-0.5 -translate-y-0.5'
                         : isAvailable
-                        ? 'border-border hover:border-foreground'
-                        : 'border-border text-muted-foreground/40 line-through cursor-not-allowed'
+                        ? 'bg-white text-comic-ink hover:-translate-y-0.5 hover:shadow-comic-sm'
+                        : 'bg-comic-cream text-comic-ink/40 line-through cursor-not-allowed'
                     }`}
                   >
                     {value}
@@ -215,55 +215,63 @@ export default function ProductActions({ product, variantExtensions }: ProductAc
 
       {/* Low Stock Warning */}
       {isLowStock && (
-        <p className="text-sm text-accent font-medium">
-          Only {inventoryQuantity} left in stock
-        </p>
+        <div className="inline-block bg-comic-red text-white border-[3px] border-comic-ink shadow-comic-sm px-3 py-1.5 font-heading uppercase tracking-wide text-xs animate-pulse">
+          ⚡ Only {inventoryQuantity} left! ⚡
+        </div>
       )}
 
       {/* Quantity + Add to Cart */}
       <div className="flex gap-3">
-        <div className="flex items-center border">
+        <div className="flex items-center border-[3px] border-comic-ink bg-white shadow-comic-sm">
           <button
             onClick={() => setQuantity(Math.max(1, quantity - 1))}
-            className="p-3 hover:bg-muted transition-colors"
+            className="p-3 hover:bg-comic-yellow transition-colors disabled:opacity-30"
             disabled={quantity <= 1}
             aria-label="Decrease quantity"
           >
-            <Minus className="h-4 w-4" />
+            <Minus className="h-4 w-4 text-comic-ink" strokeWidth={3} />
           </button>
-          <span className="w-12 text-center text-sm font-medium tabular-nums">{quantity}</span>
+          <span className="w-12 text-center text-base font-heading tabular-nums text-comic-ink border-x-[3px] border-comic-ink py-2">{quantity}</span>
           <button
             onClick={() => setQuantity(quantity + 1)}
-            className="p-3 hover:bg-muted transition-colors"
+            className="p-3 hover:bg-comic-yellow transition-colors disabled:opacity-30"
             disabled={isOutOfStock || (inventoryQuantity != null && quantity >= inventoryQuantity)}
             aria-label="Increase quantity"
           >
-            <Plus className="h-4 w-4" />
+            <Plus className="h-4 w-4 text-comic-ink" strokeWidth={3} />
           </button>
         </div>
 
         <button
           onClick={handleAddToCart}
           disabled={isOutOfStock || isAddingItem}
-          className={`flex-1 flex items-center justify-center gap-2 py-3.5 text-sm font-semibold uppercase tracking-wide transition-all ${
+          className={`flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 font-heading uppercase tracking-wide text-base border-[3px] border-comic-ink transition-all duration-150 ${
             isOutOfStock
-              ? 'bg-muted text-muted-foreground cursor-not-allowed'
+              ? 'bg-comic-cream text-comic-ink/50 cursor-not-allowed'
               : justAdded
-              ? 'bg-green-700 text-white'
-              : 'bg-foreground text-background hover:opacity-90'
+              ? 'bg-comic-green text-comic-ink shadow-comic'
+              : isAddingItem
+              ? 'bg-comic-yellow text-comic-ink shadow-comic-sm'
+              : 'bg-comic-pink text-white shadow-comic hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-comic-lg active:translate-x-1 active:translate-y-1 active:shadow-none'
           }`}
         >
           {isAddingItem ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <>
+              <Loader2 className="h-5 w-5 animate-spin" strokeWidth={2.5} />
+              Adding...
+            </>
           ) : justAdded ? (
             <>
-              <Check className="h-4 w-4" />
-              Added
+              <Check className="h-5 w-5" strokeWidth={3} />
+              Added!
             </>
           ) : isOutOfStock ? (
-            'Sold Out'
+            'Sold Out!'
           ) : (
-            'Add to Bag'
+            <>
+              <Zap className="h-5 w-5" strokeWidth={2.5} fill="currentColor" />
+              Add to Bag!
+            </>
           )}
         </button>
       </div>
