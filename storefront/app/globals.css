@@ -4,37 +4,34 @@
 
 @layer base {
   :root {
-    --background: 40 20% 98%;
-    --foreground: 0 0% 10%;
-    --muted: 40 10% 94%;
-    --muted-foreground: 0 0% 45%;
-    --accent: 35 40% 50%;
+    /* Comic / meme palette */
+    --background: 52 100% 92%;          /* cream-yellow paper */
+    --foreground: 0 0% 4%;               /* ink black */
+    --muted: 52 100% 85%;
+    --muted-foreground: 0 0% 30%;
+    --accent: 332 100% 62%;              /* hot pink */
     --accent-foreground: 0 0% 100%;
-    --border: 40 10% 88%;
-    --ring: 35 40% 50%;
-    --primary: 0 0% 10%;
-    --primary-foreground: 0 0% 98%;
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 98%;
-
-    /* Brand colors (dynamically injected from Store.metadata.brand) */
-    /* Access in CSS: var(--brand-primary), var(--brand-secondary) */
-    /* Managed by BrandStyleInjector component */
+    --border: 0 0% 4%;                   /* hard black borders everywhere */
+    --ring: 332 100% 62%;
+    --primary: 0 0% 4%;
+    --primary-foreground: 56 100% 50%;   /* yellow on black */
+    --destructive: 0 100% 55%;
+    --destructive-foreground: 0 0% 100%;
   }
 
   .dark {
-    --background: 0 0% 6%;
-    --foreground: 40 20% 94%;
-    --muted: 0 0% 12%;
-    --muted-foreground: 0 0% 55%;
-    --accent: 35 45% 55%;
+    --background: 0 0% 8%;
+    --foreground: 56 100% 88%;
+    --muted: 0 0% 14%;
+    --muted-foreground: 0 0% 65%;
+    --accent: 332 100% 62%;
     --accent-foreground: 0 0% 100%;
-    --border: 0 0% 16%;
-    --ring: 35 45% 55%;
-    --primary: 40 20% 94%;
-    --primary-foreground: 0 0% 6%;
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 98%;
+    --border: 56 100% 88%;
+    --ring: 332 100% 62%;
+    --primary: 56 100% 50%;
+    --primary-foreground: 0 0% 4%;
+    --destructive: 0 100% 55%;
+    --destructive-foreground: 0 0% 100%;
   }
 }
 
@@ -45,10 +42,13 @@
 
   body {
     @apply bg-background text-foreground font-body antialiased;
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(0,0,0,0.12) 1px, transparent 0);
+    background-size: 18px 18px;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-heading;
+    @apply font-heading uppercase tracking-wide;
   }
 }
 
@@ -61,18 +61,113 @@
     text-wrap: balance;
   }
 
-  .link-underline {
-    @apply relative;
-  }
-  .link-underline::after {
-    content: '';
-    @apply absolute bottom-0 left-0 h-px w-0 bg-foreground transition-all duration-300;
-  }
-  .link-underline:hover::after {
-    @apply w-full;
+  /* Halftone dot background */
+  .halftone {
+    background-image: radial-gradient(circle, rgba(0,0,0,0.25) 1.2px, transparent 1.2px);
+    background-size: 10px 10px;
   }
 
-  /* Brand color utilities - uses colors from Store.metadata.brand */
+  .halftone-pink {
+    background-image: radial-gradient(circle, #FF3EA5 1.5px, transparent 1.5px);
+    background-size: 12px 12px;
+  }
+
+  .halftone-yellow {
+    background-image: radial-gradient(circle, #FFE600 1.8px, transparent 1.8px);
+    background-size: 14px 14px;
+  }
+
+  /* Diagonal stripes — classic comic motion lines */
+  .stripes-black {
+    background-image: repeating-linear-gradient(
+      45deg,
+      #0A0A0A 0,
+      #0A0A0A 8px,
+      transparent 8px,
+      transparent 16px
+    );
+  }
+
+  /* Comic outline */
+  .comic-border {
+    @apply border-[3px] border-comic-ink;
+  }
+
+  .comic-border-thick {
+    @apply border-4 border-comic-ink;
+  }
+
+  /* Comic button */
+  .btn-comic {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 font-heading uppercase tracking-wide text-base
+           bg-comic-yellow text-comic-ink border-[3px] border-comic-ink shadow-comic
+           transition-all duration-150;
+  }
+  .btn-comic:hover {
+    @apply -translate-x-0.5 -translate-y-0.5 shadow-comic-lg;
+  }
+  .btn-comic:active {
+    @apply translate-x-1 translate-y-1 shadow-none;
+  }
+
+  .btn-comic-pink {
+    @apply btn-comic bg-comic-pink text-white;
+  }
+  .btn-comic-blue {
+    @apply btn-comic bg-comic-blue text-comic-ink;
+  }
+  .btn-comic-black {
+    @apply btn-comic bg-comic-ink text-comic-yellow;
+  }
+
+  /* Comic card */
+  .card-comic {
+    @apply bg-white border-[3px] border-comic-ink shadow-comic;
+  }
+
+  /* Speech bubble */
+  .speech-bubble {
+    @apply relative bg-white border-[3px] border-comic-ink rounded-[1.5rem] px-6 py-4 shadow-comic;
+  }
+  .speech-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -18px;
+    left: 40px;
+    width: 0;
+    height: 0;
+    border-left: 14px solid transparent;
+    border-right: 14px solid transparent;
+    border-top: 22px solid #0A0A0A;
+  }
+  .speech-bubble::before {
+    content: '';
+    position: absolute;
+    bottom: -13px;
+    left: 43px;
+    width: 0;
+    height: 0;
+    border-left: 11px solid transparent;
+    border-right: 11px solid transparent;
+    border-top: 18px solid white;
+    z-index: 1;
+  }
+
+  /* Burst / starburst tag */
+  .burst-tag {
+    @apply inline-flex items-center justify-center font-heading uppercase
+           bg-comic-red text-white border-[3px] border-comic-ink
+           px-4 py-2 text-sm;
+    clip-path: polygon(
+      50% 0%, 61% 12%, 75% 5%, 78% 22%, 95% 25%,
+      88% 40%, 100% 50%, 88% 60%, 95% 75%, 78% 78%,
+      75% 95%, 61% 88%, 50% 100%, 39% 88%, 25% 95%,
+      22% 78%, 5% 75%, 12% 60%, 0% 50%, 12% 40%,
+      5% 25%, 22% 22%, 25% 5%, 39% 12%
+    );
+  }
+
+  /* Brand color utilities (kept for compatibility) */
   .btn-brand-primary {
     background-color: var(--brand-primary, hsl(var(--primary)));
     color: white;
@@ -80,25 +175,31 @@
   .btn-brand-primary:hover {
     opacity: 0.9;
   }
-
   .text-brand-primary {
     color: var(--brand-primary, hsl(var(--primary)));
   }
-
   .text-brand-secondary {
     color: var(--brand-secondary, hsl(var(--accent)));
   }
-
   .border-brand-primary {
     border-color: var(--brand-primary, hsl(var(--border)));
   }
-
   .bg-brand-primary {
     background-color: var(--brand-primary, hsl(var(--primary)));
   }
-
   .bg-brand-secondary {
     background-color: var(--brand-secondary, hsl(var(--accent)));
+  }
+
+  .link-underline {
+    @apply relative;
+  }
+  .link-underline::after {
+    content: '';
+    @apply absolute bottom-0 left-0 h-[3px] w-0 bg-comic-ink transition-all duration-200;
+  }
+  .link-underline:hover::after {
+    @apply w-full;
   }
 }
 
@@ -109,12 +210,12 @@ html {
 
 /* Selection color */
 ::selection {
-  @apply bg-accent/20 text-foreground;
+  @apply bg-comic-pink text-white;
 }
 
 /* Focus styles */
 :focus-visible {
-  @apply outline-2 outline-offset-2 outline-ring;
+  @apply outline-2 outline-offset-2 outline-comic-pink;
 }
 
 /* Cookie consent animation */

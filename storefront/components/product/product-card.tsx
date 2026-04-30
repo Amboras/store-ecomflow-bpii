@@ -17,29 +17,33 @@ export default function ProductCard({ product, variantExtensions }: ProductCardP
   const ext = variant?.id ? variantExtensions?.[variant.id] : null
 
   const soldOut = isProductSoldOut(product.variants || [], variantExtensions)
+  const onSale = ext?.compare_at_price && currentAmount && ext.compare_at_price > currentAmount
 
   return (
     <Link href={`/products/${product.handle}`} className="group block" prefetch={true}>
-      <div className="space-y-3">
+      <div className="card-comic bg-white overflow-hidden hover:-translate-y-1 hover:shadow-comic-lg transition-all duration-150">
         {/* Product Image */}
-        <div className="relative aspect-[3/4] overflow-hidden bg-muted rounded-sm">
+        <div className="relative aspect-square overflow-hidden bg-comic-cream border-b-[3px] border-comic-ink">
           <Image
             src={getProductImage(product.thumbnail, product.id)}
             alt={product.title}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-            className={`object-cover transition-transform duration-500 ease-out group-hover:scale-105 ${soldOut ? 'opacity-50' : ''}`}
+            className={`object-cover transition-transform duration-300 ease-out group-hover:scale-105 ${soldOut ? 'opacity-50' : ''}`}
           />
           {soldOut && (
-            <div className="absolute top-2 left-2 bg-muted-foreground/80 text-white text-xs font-semibold uppercase tracking-wide px-2.5 py-1 rounded-sm">
-              Sold Out
+            <div className="absolute top-2 left-2 bg-comic-ink text-comic-yellow font-heading text-sm uppercase tracking-wider px-3 py-1 border-[3px] border-comic-ink shadow-comic-sm">
+              Sold Out!
             </div>
+          )}
+          {!soldOut && onSale && (
+            <div className="absolute top-2 right-2 burst-tag !text-xs">SALE!</div>
           )}
         </div>
 
         {/* Product Info */}
-        <div className="space-y-1">
-          <h3 className={`text-sm font-medium line-clamp-1 group-hover:underline underline-offset-4 transition-all ${soldOut ? 'text-muted-foreground' : ''}`}>
+        <div className="p-3 sm:p-4 space-y-1.5 bg-white">
+          <h3 className={`font-heading text-lg sm:text-xl tracking-wide line-clamp-1 ${soldOut ? 'text-muted-foreground' : 'text-comic-ink'}`}>
             {product.title}
           </h3>
           <ProductPrice
