@@ -1,3 +1,4 @@
+import { ClientPluginSlot } from '@/components/ClientPluginSlot'
 import Image from 'next/image'
 import Link from 'next/link'
 import { getProductImage } from '@/lib/utils/placeholder-images'
@@ -51,6 +52,7 @@ export default function ProductCard({ product, variantExtensions }: ProductCardP
           <h3 className={`text-sm sm:text-base font-medium line-clamp-1 ${soldOut ? 'text-white/40' : 'text-white'}`}>
             {product.title}
           </h3>
+          <ClientPluginSlot name="collectionCard" context={{ productId: product.id }} />
           <ProductPrice
             amount={currentAmount}
             currency={currency}

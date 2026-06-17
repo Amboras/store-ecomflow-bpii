@@ -1,3 +1,5 @@
+import { ClientPluginSlot } from '@/components/ClientPluginSlot'
+import { PluginSlot } from '@/components/PluginSlot'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
@@ -110,6 +112,7 @@ export default async function ProductPage({
 
   return (
     <>
+      <ClientPluginSlot name="pdpAnalytics" context={{ productId: product.id, productName: product.title }} />
       {/* Breadcrumbs */}
       <div className="border-b border-white/10">
         <div className="container-custom py-4">
@@ -182,6 +185,7 @@ export default async function ProductPage({
             />
 
             <ProductActions product={product} variantExtensions={variantExtensions} />
+            <ClientPluginSlot name="pdpBelowAddToCart" context={{ productId: product.id }} />
 
             {/* Trust Signals */}
             <div className="grid grid-cols-3 gap-3 pt-6 border-t border-white/10">
@@ -203,6 +207,7 @@ export default async function ProductPage({
               description={product.description}
               details={product.metadata as Record<string, string> | undefined}
             />
+            <PluginSlot name="pdpAfterDescription" context={{ productId: product.id }} />
           </div>
         </div>
       </div>

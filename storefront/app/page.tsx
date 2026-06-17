@@ -1,5 +1,6 @@
 'use client'
 
+import { ClientPluginSlot } from '@/components/ClientPluginSlot'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState } from 'react'

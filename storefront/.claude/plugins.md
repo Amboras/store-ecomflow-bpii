@@ -173,3 +173,92 @@ STEP 5: Clean up any remaining review-related imports across the storefront (Sta
 
 STEP 6: Confirm completion:
 "Reviews plugin has been removed from your storefront. Your review data is preserved — you can reinstall anytime and all existing reviews will still be there."
+
+<!-- AMBORAS:PLUGIN:klaviyo:START -->
+### Klaviyo
+npm: @amboras-dev/klaviyo
+
+Email and SMS marketing for ecommerce — flows, segments, and predictive analytics powered by your store data.
+
+**Components (written to your workspace — edit freely):**
+
+> BEFORE rendering any of these components, open the file with the Read tool and read the exported TypeScript `Props` interface. Required props MUST be passed or the build will fail with a type error at runtime.
+
+`KlaviyoProvider` — Loads klaviyo.js once for the entire storefront. Renders nothing if no publicKey is configured. Required for any other klaviyo hook to work.
+  Destination:    `Root layout (mounted via rootProviders slot)`
+  Required props: (none)
+  Optional props: strategy: 'afterInteractive' | 'lazyOnload' (default: afterInteractive), publicKey: string — Klaviyo company id (e.g. 'SUru6y')
+  Usage:          `<KlaviyoProvider publicKey={status.data?.publicKey} />`
+
+`KlaviyoIdentifyOnLogin` — Fires Klaviyo identify with the customer's email + id whenever they sign in. Idempotent — deduplicates on email changes so a re-login doesn't re-fire.
+  Destination:    `Account section (auto-placed)`
+  Required props: (none)
+  Optional props: customer: object — { id, email, first_name, last_name, phone? }
+  Usage:          `<KlaviyoIdentifyOnLogin customer={customer} />`
+
+`SmsConsentCheckbox` — Renders an opt-in form for SMS marketing at checkout. Auto-hides when the merchant has no active SMS plan or no configured sender. Substitutes {brand} in the disclosure with the actual store name. Posts to Klaviyo's /client/subscriptions on submit; double-opt-in SMS arrives on the phone for the shopper to confirm.
+  Destination:    `checkoutOrderSummary slot (storefront checkout page)`
+  Required props: (none)
+
+  Usage:          `<SmsConsentCheckbox /> (component reads everything it needs from useKlaviyoSmsStatus)`
+
+`SmsPreferencesNavCard` — Nav card in the account dashboard linking shoppers to /account/notifications to manage SMS preferences. Auto-hides when SMS isn't active for the store.
+  Destination:    `accountOverview slot`
+  Required props: (none)
+
+  Usage:          `<SmsPreferencesNavCard />`
+
+`NotificationsPage` — Customer-facing unsubscribe page. Reads the storefront customer JWT from the _medusa_jwt cookie and calls /store/klaviyo/unsubscribe-sms server-side.
+  Destination:    `app/account/notifications/page.jsx`
+  Required props: (none)
+
+  Usage:          `Auto-installed at /account/notifications`
+
+**Hooks (from npm package — import, do not copy):**
+
+`useKlaviyo` — `useKlaviyo(): { isReady: boolean, klaviyo: KlaviyoSDK | null }`
+  Returns: Access to the loaded klaviyo.js SDK + readiness flag. Returns null SDK until KlaviyoProvider finishes loading.
+  Import:  `import { useKlaviyo } from '@amboras-dev/klaviyo'`
+
+`useKlaviyoIdentify` — `useKlaviyoIdentify(): (profile: { email, first_name?, last_name?, phone? }) => Promise<void>`
+  Returns: Imperative identify trigger. Use when you need to identify outside of the login flow (e.g. newsletter signup popup).
+  Import:  `import { useKlaviyoIdentify } from '@amboras-dev/klaviyo'`
+
+`useKlaviyoTrack` — `useKlaviyoTrack(): (metric: string, properties?: Record<string, unknown>) => Promise<void>`
+  Returns: Send a custom event to Klaviyo. Standard events ('Started Checkout', 'Placed Order') are fired automatically by other amboras plugins — use this hook for custom merchant-defined events.
+  Import:  `import { useKlaviyoTrack } from '@amboras-dev/klaviyo'`
+
+`useKlaviyoViewedProduct` — `useKlaviyoViewedProduct(product: { id, title, price, imageUrl?, url? }): void`
+  Returns: Auto-fires the 'Viewed Product' event on mount. Place on PDP. Idempotent within a single page-view session.
+  Import:  `import { useKlaviyoViewedProduct } from '@amboras-dev/klaviyo'`
+
+`useKlaviyoSmsStatus` — `useKlaviyoSmsStatus(opts?: { baseUrl?, publishableKey? }): UseQueryResult<SmsStatusData>`
+  Returns: { smsActive, senderConfigured, disclosureText, smsListId, publicKey, storeName } from Medusa's /store/integrations/active. 5-min TanStack staleTime. Returns smsActive=false when the merchant hasn't completed SMS setup.
+  Import:  `import { useKlaviyoSmsStatus } from '@amboras-dev/klaviyo'`
+
+`useKlaviyoSubscribePhone` — `useKlaviyoSubscribePhone(opts: { tenantId?, publicApiKey?, listId?, customSource?, supportedCountries? }): UseMutationResult<SubscribePhoneResult, never, { phoneNumber, disclosureText }>`
+  Returns: Mutation hook that POSTs to Klaviyo's /client/subscriptions with E.164-normalized phone + list relationship. Result shape: { ok: true } | { ok: false, error: { code, message } }. Short-circuit codes: 'no_public_key' (publicApiKey missing), 'invalid_phone' (parse failed), 'unsupported_country' (region not in active list), 'klaviyo_error' (upstream 4xx/5xx).
+  Import:  `import { useKlaviyoSubscribePhone } from '@amboras-dev/klaviyo'`
+
+`useKlaviyoUnsubscribePhone` — `useKlaviyoUnsubscribePhone(opts?: { baseUrl? }): UseMutationResult<UnsubscribePhoneResult, never, { phoneNumber, customerToken }>`
+  Returns: Mutation hook for the customer self-service unsubscribe page. Posts to Medusa's /store/klaviyo/unsubscribe-sms (not Klaviyo directly). Returns Result shape matching subscribe.
+  Import:  `import { useKlaviyoUnsubscribePhone } from '@amboras-dev/klaviyo'`
+
+`getKlaviyoPublicKey (server)` — `getKlaviyoPublicKey(baseUrl: string, publishableKey: string): Promise<string | null>`
+  Returns: Server-side fetch of the merchant's public key from Medusa. Use in Next.js Server Components or app router root layout to pass into <KlaviyoProvider> at SSR time without exposing the storefront's publishable key client-side beyond what's already public.
+  Import:  `import { getKlaviyoPublicKey (server) } from '@amboras-dev/klaviyo'`
+
+**API endpoints:**
+  GET  /store/integrations/active  — public-safe plugin config { klaviyo: {publicKey, sms_active, sms_sender_configured, sms_disclosure_text, sms_list_id, sms_active_regions, sms_supported_countries}, store_name } (cached 60s, busted on credential sync)
+  POST /store/klaviyo/unsubscribe-sms  — customer self-service unsubscribe; requires _medusa_jwt bearer token
+  POST   /admin/klaviyo/connect           — merchant supplies privateKey + publicKey; validates with Klaviyo, encrypts + stores, probes SMS, registers webhook (if Advanced KDP)  ← admin auth required
+  DELETE /admin/klaviyo/disconnect        — clears credentials + Medusa metadata + in-memory caches  ← admin auth required
+  GET    /admin/klaviyo/status            — connected/disconnected + account name + plan info  ← admin auth required
+  GET    /admin/klaviyo/sms-status        — SMS plan state, sender config, active regions, list id  ← admin auth required
+  POST   /admin/klaviyo/probe-sms         — manual 'Refresh status' trigger; re-runs the 21-country probe  ← admin auth required
+  PATCH  /admin/klaviyo/sms-disclosure    — update the TCPA disclosure text + frequency-per-month  ← admin auth required
+  GET    /admin/klaviyo/sms-events        — activity log feed (sent/received/clicked/failed/subscribed/unsubscribed), grouped by phone number, paginated. Empty for non-KDP accounts.  ← admin auth required
+  POST   /webhooks/klaviyo                — Klaviyo → Medusa webhook ingress (HMAC-verified, dedup-on-conflict). Requires Klaviyo Advanced KDP on the merchant account.  ← admin auth required
+  POST   /orchestrator/klaviyo/sync-credentials  — internal endpoint (X-Orchestrator-Secret); orchestrator pushes credential + SMS state on every connect/probe; handler busts storefront cache + ensures webhook is registered  ← admin auth required
+
+<!-- AMBORAS:PLUGIN:klaviyo:END -->
