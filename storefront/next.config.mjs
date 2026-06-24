@@ -5,8 +5,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  distDir: process.env.NEXT_DIST_DIR ?? '.next',
   allowedDevOrigins: ['*.tunnel.amboras.com'],
-  outputFileTracingRoot: __dirname,
   output: 'standalone',
   poweredByHeader: false,
   compress: true,
