@@ -98,7 +98,7 @@ interface CookiePayload {
 // function to be named `proxy` (or default), not just the file. This mirrors
 // the official @next/codemod middleware-to-proxy, which renames both file and
 // function together.
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   // ── H1: short-circuit on flag-off stores. MUST be the first line. ──────────
   if (!AB_ENABLED || !ROUTER_URL || !ROUTER_SECRET || !STORE_ID) {
     // Diagnostic-friendly short-circuit: expose which env piece is missing so

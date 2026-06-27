@@ -107,7 +107,7 @@ export default function DropsPage() {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {drops.map((d, i) => (
+                {drops.map((d: any, i: number) => (
                   <DropCard key={d.product.id} drop={d} index={i} formatPrice={formatPrice} />
                 ))}
               </div>
