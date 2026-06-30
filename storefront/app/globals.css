@@ -4,21 +4,21 @@
 
 @layer base {
   :root {
-    /* Aura — dark, sleek, red accent */
-    --background: 0 0% 0%;                 /* pure black */
-    --foreground: 0 0% 100%;               /* white */
-    --muted: 0 0% 6%;
-    --muted-foreground: 0 0% 65%;
-    --accent: 0 84% 60%;                   /* red accent */
-    --accent-foreground: 0 0% 100%;
-    --border: 0 0% 100%;                   /* white at low opacity (used via /10) */
-    --ring: 0 84% 60%;
-    --primary: 0 84% 60%;
-    --primary-foreground: 0 0% 100%;
-    --destructive: 0 84% 60%;
+    /* Midnight sapphire with warm gold accents */
+    --background: 224 47% 8%;
+    --foreground: 42 33% 96%;
+    --muted: 223 31% 14%;
+    --muted-foreground: 39 18% 72%;
+    --accent: 40 88% 64%;
+    --accent-foreground: 222 47% 10%;
+    --border: 221 28% 28%;
+    --ring: 40 88% 64%;
+    --primary: 192 78% 61%;
+    --primary-foreground: 222 47% 10%;
+    --destructive: 0 79% 61%;
     --destructive-foreground: 0 0% 100%;
-    --card: 0 0% 4%;
-    --card-foreground: 0 0% 100%;
+    --card: 223 39% 11%;
+    --card-foreground: 42 33% 96%;
   }
 }
 
