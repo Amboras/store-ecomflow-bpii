@@ -68,13 +68,13 @@
     background-size: 100% 100%;
   }
 
-  /* Red radial glow utility */
+  /* Accent glow utilities */
   .red-glow {
-    background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(220, 38, 38, 0.35) 0%, transparent 70%);
+    background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(56, 189, 248, 0.26) 0%, transparent 70%);
   }
 
   .red-glow-soft {
-    background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(220, 38, 38, 0.18) 0%, transparent 70%);
+    background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(251, 191, 36, 0.18) 0%, transparent 70%);
   }
 
   /* Aura pill button — dark transparent with subtle border */
