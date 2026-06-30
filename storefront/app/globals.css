@@ -127,7 +127,8 @@
   }
   .link-underline::after {
     content: '';
-    @apply absolute bottom-0 left-0 h-px w-0 bg-red-500 transition-all duration-200;
+    @apply absolute bottom-0 left-0 h-px w-0 transition-all duration-200;
+    background: linear-gradient(90deg, #fbbf24 0%, #38bdf8 100%);
   }
   .link-underline:hover::after {
     @apply w-full;
