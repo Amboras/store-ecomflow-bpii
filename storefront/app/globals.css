@@ -77,40 +77,48 @@
     background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(251, 191, 36, 0.18) 0%, transparent 70%);
   }
 
-  /* Aura pill button — dark transparent with subtle border */
+  /* Soft pill button */
   .btn-pill {
     @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full
-           bg-white/[0.04] border border-white/15 text-white text-sm font-medium
-           backdrop-blur-sm transition-all duration-200;
+           text-foreground text-sm font-medium backdrop-blur-sm transition-all duration-200;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(248, 250, 252, 0.12);
   }
   .btn-pill:hover {
-    @apply bg-white/[0.08] border-white/25 -translate-y-0.5;
-  }
-
-  /* Aura red gradient pill button */
-  .btn-pill-red {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full
-           text-white text-sm font-medium
-           transition-all duration-200 relative overflow-hidden;
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #991b1b 100%);
-    box-shadow: 0 0 0 1px rgba(255,255,255,0.1) inset, 0 4px 20px -4px rgba(220, 38, 38, 0.5);
-  }
-  .btn-pill-red:hover {
-    box-shadow: 0 0 0 1px rgba(255,255,255,0.15) inset, 0 8px 32px -4px rgba(220, 38, 38, 0.7);
+    background: rgba(255, 255, 255, 0.09);
+    border-color: rgba(251, 191, 36, 0.28);
     transform: translateY(-2px);
   }
 
-  /* Aura card — dark with subtle border */
+  /* Signature gradient pill button */
+  .btn-pill-red {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full
+           text-slate-950 text-sm font-semibold transition-all duration-200 relative overflow-hidden;
+    background: linear-gradient(135deg, #f8d66d 0%, #fbbf24 45%, #38bdf8 100%);
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.12) inset, 0 10px 30px -10px rgba(56, 189, 248, 0.45);
+  }
+  .btn-pill-red:hover {
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.16) inset, 0 18px 38px -12px rgba(251, 191, 36, 0.4);
+    transform: translateY(-2px);
+  }
+
+  /* Elevated card */
   .card-aura {
-    @apply bg-white/[0.02] border border-white/10 rounded-2xl backdrop-blur-sm transition-all duration-300;
+    @apply rounded-2xl backdrop-blur-sm transition-all duration-300;
+    background: linear-gradient(180deg, rgba(20, 30, 50, 0.88) 0%, rgba(12, 20, 36, 0.92) 100%);
+    border: 1px solid rgba(148, 163, 184, 0.14);
+    box-shadow: 0 18px 50px -30px rgba(15, 23, 42, 0.9);
   }
   .card-aura:hover {
-    @apply bg-white/[0.04] border-white/20;
+    border-color: rgba(251, 191, 36, 0.24);
+    box-shadow: 0 24px 70px -36px rgba(56, 189, 248, 0.45);
   }
 
   /* Glass card (for floating elements) */
   .card-glass {
-    @apply bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl;
+    @apply rounded-2xl backdrop-blur-xl;
+    background: rgba(15, 23, 42, 0.62);
+    border: 1px solid rgba(248, 250, 252, 0.1);
   }
 
   /* Underline link */
