@@ -15,6 +15,8 @@
     "postinstall": "git -C .. config core.hooksPath .githooks || true"
   },
   "dependencies": {
+    "@amboras-dev/plugin-types": "^1.1.0",
+    "@amboras-dev/reviews": "0.4.0",
     "@hookform/resolvers": "^5.2.2",
     "@medusajs/js-sdk": "^2.13.4",
     "@stripe/react-stripe-js": "^5.6.1",
