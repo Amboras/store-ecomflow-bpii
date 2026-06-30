@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Search, ShoppingBag, User, Menu, X, LogIn } from 'lucide-react'
+import { Menu, Search, ShoppingBag, User, X, LogIn } from 'lucide-react'
 import { useCart } from '@/hooks/use-cart'
 import { useAuth } from '@/hooks/use-auth'
 import CartDrawer from '@/components/cart/cart-drawer'
@@ -22,7 +22,7 @@ export default function Header() {
   const mobileMenuCloseRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 10)
+    const handleScroll = () => setIsScrolled(window.scrollY > 12)
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
@@ -33,26 +33,27 @@ export default function Header() {
 
   useEffect(() => {
     if (!isMobileMenuOpen) return
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setIsMobileMenuOpen(false)
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setIsMobileMenuOpen(false)
     }
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [isMobileMenuOpen])
 
-  const handleMobileMenuKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (e.key !== 'Tab' || !mobileMenuRef.current) return
+  const handleMobileMenuKeyDown = useCallback((event: React.KeyboardEvent) => {
+    if (event.key !== 'Tab' || !mobileMenuRef.current) return
     const focusable = mobileMenuRef.current.querySelectorAll<HTMLElement>(
       'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
     )
     if (focusable.length === 0) return
     const first = focusable[0]
     const last = focusable[focusable.length - 1]
-    if (e.shiftKey && document.activeElement === first) {
-      e.preventDefault()
+
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault()
       last.focus()
-    } else if (!e.shiftKey && document.activeElement === last) {
-      e.preventDefault()
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault()
       first.focus()
     }
   }, [])
@@ -60,13 +61,11 @@ export default function Header() {
   const navItems = [
     { label: 'Home', href: '/' },
     { label: 'Shop', href: '/products' },
-    { label: 'Drops', href: '/drops' },
-    { label: 'Discover', href: '/discover' },
-    { label: 'Gift', href: '/gift' },
-    { label: 'Rewards', href: '/rewards' },
+    { label: 'Collections', href: '/collections' },
+    { label: 'About', href: '/about' },
+    { label: 'Contact', href: '/contact' },
   ]
 
-  // Suppress unused warning (collections kept for future use)
   void collections
 
   return (
@@ -74,45 +73,42 @@ export default function Header() {
       <header
         className={`sticky top-0 z-40 w-full transition-all duration-300 ${
           isScrolled
-            ? 'bg-black/70 backdrop-blur-xl border-b border-white/10'
+            ? 'border-b border-white/10 bg-[#0d0b08]/82 backdrop-blur-2xl'
             : 'bg-transparent'
         }`}
       >
         <div className="container-custom">
           <div className="flex h-20 items-center justify-between gap-4">
-            {/* Mobile menu toggle */}
             <button
               onClick={() => setIsMobileMenuOpen(true)}
-              className="p-2 -ml-2 lg:hidden rounded-full text-white/80 hover:text-white hover:bg-white/5 transition-colors"
+              className="-ml-2 rounded-full p-2 text-white/80 transition-colors hover:bg-white/5 hover:text-white lg:hidden"
               aria-label="Open menu"
             >
               <Menu className="h-5 w-5" />
             </button>
 
-            {/* Logo — first letter red, rest white */}
-            <Link href="/" className="flex items-center group">
-              <span className="font-heading font-bold text-2xl tracking-tight">
-                <span className="text-red-500">A</span>
-                <span className="text-white">URA</span>
+            <Link href="/" className="group flex items-center gap-3">
+              <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[#f6d79b]/20 bg-[#f6d79b]/10 text-sm font-semibold tracking-[0.18em] text-[#f6d79b]">
+                E
               </span>
+              <div className="hidden sm:block">
+                <p className="font-heading text-xl font-semibold tracking-[0.18em] text-white">ECOMFLOW</p>
+                <p className="text-[10px] uppercase tracking-[0.28em] text-white/40">Curated essentials</p>
+              </div>
             </Link>
 
-            {/* Desktop Navigation — pill container */}
-            <nav className="hidden lg:flex items-center bg-white/[0.03] border border-white/10 rounded-full px-2 py-1.5 backdrop-blur-md">
+            <nav className="hidden items-center gap-1 rounded-full border border-white/10 bg-white/[0.04] px-2 py-2 backdrop-blur-md lg:flex">
               {navItems.map((item) => {
-                const isActive =
-                  item.href === '/'
-                    ? pathname === '/'
-                    : pathname.startsWith(item.href)
+                const isActive = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href)
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
                     prefetch={true}
-                    className={`px-5 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
+                    className={`rounded-full px-4 py-2 text-sm transition-all duration-200 ${
                       isActive
-                        ? 'bg-white/10 text-white shadow-inset-border'
-                        : 'text-white/70 hover:text-white hover:bg-white/[0.05]'
+                        ? 'bg-white/10 text-white'
+                        : 'text-white/65 hover:bg-white/[0.06] hover:text-white'
                     }`}
                   >
                     {item.label}
@@ -121,30 +117,29 @@ export default function Header() {
               })}
             </nav>
 
-            {/* Actions */}
             <div className="flex items-center gap-2">
               <Link
                 href="/search"
-                className="p-2.5 rounded-full text-white/70 hover:text-white hover:bg-white/5 transition-colors"
+                className="rounded-full p-2.5 text-white/70 transition-colors hover:bg-white/5 hover:text-white"
                 aria-label="Search"
               >
                 <Search className="h-4 w-4" strokeWidth={2} />
               </Link>
               <Link
                 href={isLoggedIn ? '/account' : '/auth/login'}
-                className="p-2.5 rounded-full text-white/70 hover:text-white hover:bg-white/5 transition-colors hidden sm:block"
+                className="hidden rounded-full p-2.5 text-white/70 transition-colors hover:bg-white/5 hover:text-white sm:block"
                 aria-label={isLoggedIn ? 'Account' : 'Sign in'}
               >
                 {isLoggedIn ? <User className="h-4 w-4" strokeWidth={2} /> : <LogIn className="h-4 w-4" strokeWidth={2} />}
               </Link>
               <button
                 onClick={() => setIsCartOpen(true)}
-                className="relative p-2.5 rounded-full text-white/70 hover:text-white hover:bg-white/5 transition-colors"
+                className="relative rounded-full p-2.5 text-white/70 transition-colors hover:bg-white/5 hover:text-white"
                 aria-label="Shopping bag"
               >
                 <ShoppingBag className="h-4 w-4" strokeWidth={2} />
                 {itemCount > 0 && (
-                  <span className="absolute top-0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-medium text-white">
+                  <span className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full bg-[#f6d79b] text-[10px] font-medium text-black">
                     {itemCount}
                   </span>
                 )}
@@ -154,11 +149,10 @@ export default function Header() {
         </div>
       </header>
 
-      {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div
-            className="absolute inset-0 bg-black/80 backdrop-blur-md"
+            className="absolute inset-0 bg-black/75 backdrop-blur-md"
             onClick={() => setIsMobileMenuOpen(false)}
           />
           <div
@@ -167,46 +161,46 @@ export default function Header() {
             aria-modal="true"
             aria-label="Navigation menu"
             onKeyDown={handleMobileMenuKeyDown}
-            className="absolute inset-y-0 left-0 w-80 max-w-[85vw] bg-black border-r border-white/10 animate-slide-in-right"
+            className="absolute inset-y-0 left-0 w-80 max-w-[85vw] border-r border-white/10 bg-[#090807] animate-slide-in-right"
           >
-            <div className="flex items-center justify-between p-5 border-b border-white/10">
-              <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="font-heading font-bold text-2xl tracking-tight">
-                <span className="text-red-500">A</span>
-                <span className="text-white">URA</span>
-              </Link>
+            <div className="flex items-center justify-between border-b border-white/10 p-5">
+              <div>
+                <p className="font-heading text-xl font-semibold tracking-[0.18em] text-white">ECOMFLOW</p>
+                <p className="mt-1 text-[10px] uppercase tracking-[0.28em] text-white/40">Curated essentials</p>
+              </div>
               <button
                 ref={mobileMenuCloseRef}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="p-2 rounded-full text-white/70 hover:text-white hover:bg-white/5"
+                className="rounded-full p-2 text-white/70 hover:bg-white/5 hover:text-white"
                 aria-label="Close menu"
               >
                 <X className="h-5 w-5" strokeWidth={2} />
               </button>
             </div>
-            <nav className="p-5 space-y-1">
+            <nav className="space-y-1 p-5">
               {navItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="block py-3 px-4 text-base font-medium text-white/80 hover:text-white hover:bg-white/5 rounded-xl transition-colors"
+                  className="block rounded-2xl px-4 py-3 text-base font-medium text-white/80 transition-colors hover:bg-white/5 hover:text-white"
                   prefetch={true}
                 >
                   {item.label}
                 </Link>
               ))}
-              <div className="pt-4 mt-4 border-t border-white/10 space-y-1">
+              <div className="mt-4 space-y-1 border-t border-white/10 pt-4">
                 <Link
                   href={isLoggedIn ? '/account' : '/auth/login'}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="block py-3 px-4 text-sm text-white/60 hover:text-white"
+                  className="block px-4 py-3 text-sm text-white/60 hover:text-white"
                 >
-                  {isLoggedIn ? 'Account' : 'Sign In'}
+                  {isLoggedIn ? 'Account' : 'Sign in'}
                 </Link>
                 <Link
                   href="/search"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="block py-3 px-4 text-sm text-white/60 hover:text-white"
+                  className="block px-4 py-3 text-sm text-white/60 hover:text-white"
                 >
                   Search
                 </Link>
