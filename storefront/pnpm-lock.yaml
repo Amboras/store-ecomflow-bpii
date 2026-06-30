@@ -11,6 +11,9 @@ importers:
       '@amboras-dev/klaviyo':
         specifier: 0.5.0
         version: 0.5.0(@tanstack/react-query@5.99.0(react@19.2.5))(next@16.2.9(@babel/core@7.29.7)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react@19.2.5)
+      '@amboras-dev/plugin-types':
+        specifier: ^1.1.0
+        version: 1.1.0
       '@amboras-dev/reviews':
         specifier: 0.4.0
         version: 0.4.0(@tanstack/react-query@5.99.0(react@19.2.5))(react@19.2.5)
@@ -106,6 +109,9 @@ packages:
       '@tanstack/react-query': '>=5'
       next: '>=14'
       react: '>=18'
+
+  '@amboras-dev/plugin-types@1.1.0':
+    resolution: {integrity: sha512-EjZGy5mO3kbbdcyJ0pybD63TgvxJLEWIKXJfOID1717Ca/fv9Yd2rJ/wFM/MN7Y3G2xyPj56KA88cmvCoSsw7Q==}
 
   '@amboras-dev/reviews@0.4.0':
     resolution: {integrity: sha512-wO4pXgU8O+uUqa6KaucqjpFSJjYcGzgcOAPwpKDqCmQINGSMcl+r2JT/7wcMji/ANW5DSOwAfsuNDcotSQGOCg==}
@@ -2351,6 +2357,8 @@ snapshots:
       libphonenumber-js: 1.13.6
       next: 16.2.9(@babel/core@7.29.7)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       react: 19.2.5
+
+  '@amboras-dev/plugin-types@1.1.0': {}
 
   '@amboras-dev/reviews@0.4.0(@tanstack/react-query@5.99.0(react@19.2.5))(react@19.2.5)':
     dependencies:
