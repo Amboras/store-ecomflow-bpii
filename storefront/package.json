@@ -15,7 +15,6 @@
     "postinstall": "git -C .. config core.hooksPath .githooks || true"
   },
   "dependencies": {
-    "@amboras-dev/klaviyo": "0.5.0",
     "@amboras-dev/reviews": "0.4.0",
     "@hookform/resolvers": "^5.2.2",
     "@medusajs/js-sdk": "^2.13.4",
@@ -35,6 +34,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3",
     "@types/node": "^20.11.5",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
@@ -43,8 +43,7 @@
     "eslint-config-next": "^16.2.7",
     "postcss": "^8.4.33",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5.3.3",
-    "@eslint/eslintrc": "^3"
+    "typescript": "^5.3.3"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
