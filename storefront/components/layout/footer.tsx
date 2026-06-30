@@ -27,33 +27,33 @@ export default function Footer() {
   if (policies?.cookie_policy) companyLinks.push({ label: 'Cookie Policy', href: '/cookie-policy' })
 
   return (
-    <footer className="relative border-t border-white/10 bg-black overflow-hidden">
-      {/* Subtle red glow at top edge */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[60%] h-[1px] bg-gradient-to-r from-transparent via-red-500/40 to-transparent" />
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[40%] h-32 red-glow opacity-30 pointer-events-none" />
+    <footer className="relative overflow-hidden border-t border-white/10 bg-[#080706]">
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#f6d79b]/40 to-transparent" />
+      <div className="absolute -top-24 left-1/2 h-48 w-48 -translate-x-1/2 rounded-full bg-[#f6d79b]/10 blur-3xl" />
 
       <div className="container-custom relative py-section-sm">
-        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Brand */}
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1fr]">
           <div>
-            <Link href="/" className="inline-block">
-              <span className="font-heading font-bold text-3xl tracking-tight">
-                <span className="text-red-500">A</span>
-                <span className="text-white">URA</span>
+            <div className="flex items-center gap-3">
+              <span className="flex h-11 w-11 items-center justify-center rounded-full border border-[#f6d79b]/20 bg-[#f6d79b]/10 text-sm font-semibold tracking-[0.18em] text-[#f6d79b]">
+                E
               </span>
-            </Link>
-            <p className="mt-4 text-sm leading-relaxed text-white/50 max-w-xs">
-              Curated commerce. Modern design. Built for the future of shopping.
+              <div>
+                <p className="font-heading text-2xl font-semibold tracking-[0.18em] text-white">ECOMFLOW</p>
+                <p className="text-[10px] uppercase tracking-[0.3em] text-white/35">Curated essentials</p>
+              </div>
+            </div>
+            <p className="mt-5 max-w-sm text-sm leading-7 text-white/55">
+              Thoughtful products, polished presentation, and a shopping experience designed to feel elevated from the first click.
             </p>
           </div>
 
-          {/* Shop */}
           <div>
-            <h3 className="font-heading font-semibold text-sm tracking-wider text-white/40 uppercase mb-5">Shop</h3>
+            <h3 className="mb-5 font-heading text-sm font-semibold uppercase tracking-[0.24em] text-white/40">Shop</h3>
             <ul className="space-y-3">
               {footerLinks.shop.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-sm text-white/70 hover:text-white transition-colors">
+                  <Link href={link.href} className="text-sm text-white/70 transition-colors hover:text-white">
                     {link.label}
                   </Link>
                 </li>
@@ -61,13 +61,12 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Help */}
           <div>
-            <h3 className="font-heading font-semibold text-sm tracking-wider text-white/40 uppercase mb-5">Help</h3>
+            <h3 className="mb-5 font-heading text-sm font-semibold uppercase tracking-[0.24em] text-white/40">Help</h3>
             <ul className="space-y-3">
               {footerLinks.help.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-sm text-white/70 hover:text-white transition-colors">
+                  <Link href={link.href} className="text-sm text-white/70 transition-colors hover:text-white">
                     {link.label}
                   </Link>
                 </li>
@@ -75,13 +74,12 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Company */}
           <div>
-            <h3 className="font-heading font-semibold text-sm tracking-wider text-white/40 uppercase mb-5">Company</h3>
+            <h3 className="mb-5 font-heading text-sm font-semibold uppercase tracking-[0.24em] text-white/40">Company</h3>
             <ul className="space-y-3">
               {companyLinks.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-sm text-white/70 hover:text-white transition-colors">
+                  <Link href={link.href} className="text-sm text-white/70 transition-colors hover:text-white">
                     {link.label}
                   </Link>
                 </li>
@@ -90,10 +88,9 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="mt-16 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-white/40">
-            &copy; {new Date().getFullYear()} AURA. All rights reserved.
+        <div className="mt-16 flex flex-col items-start justify-between gap-4 border-t border-white/10 pt-6 sm:flex-row sm:items-center">
+          <p className="text-xs uppercase tracking-[0.18em] text-white/35">
+            © {new Date().getFullYear()} ECOMFLOW. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
             <button
@@ -101,11 +98,11 @@ export default function Footer() {
                 clearConsent()
                 window.dispatchEvent(new Event('manage-cookies'))
               }}
-              className="text-xs text-white/40 hover:text-white transition-colors"
+              className="text-xs uppercase tracking-[0.18em] text-white/40 transition-colors hover:text-white"
             >
               Manage Cookies
             </button>
-            <span className="text-xs text-white/30">Powered by Amboras</span>
+            <span className="text-xs uppercase tracking-[0.18em] text-white/25">Powered by Amboras</span>
           </div>
         </div>
       </div>
