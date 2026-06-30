@@ -62,7 +62,7 @@ export default function SmsConsentCheckbox() {
       <button type="submit" disabled={!consent || !phone || subscribe.isPending} className="rounded bg-black px-3 py-1.5 text-sm text-white disabled:bg-gray-400">
         {subscribe.isPending ? 'Submitting…' : 'Sign me up'}
       </button>
-      {submitted === 'error' && <p className="text-xs text-red-600">Couldn't subscribe — please try again.</p>}
+      {submitted === 'error' && <p className="text-xs text-red-600">Couldn&apos;t subscribe — please try again.</p>}
     </form>
   )
 }

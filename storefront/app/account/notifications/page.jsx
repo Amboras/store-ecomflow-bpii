@@ -15,7 +15,7 @@ function NotificationsContent() {
   // this page is by typing the URL directly; rendering nothing is the
   // correct fallback (Next.js shows the layout chrome around an empty page).
   if (!status.data?.smsActive) return null
-  if (done) return <p className="text-sm text-green-700">You've been unsubscribed.</p>
+  if (done) return <p className="text-sm text-green-700">You&apos;ve been unsubscribed.</p>
 
   return (
     <div className="space-y-4">
