@@ -11,10 +11,8 @@ export default function AnnouncementBar() {
   return (
     <div className="relative bg-gradient-to-r from-black via-red-950/40 to-black border-b border-white/5 overflow-hidden">
       <div className="container-custom relative flex items-center justify-center py-2 text-xs sm:text-sm font-medium text-white/80">
-        <p className="tracking-wide">
-          <span className="text-red-400">✦</span>{' '}
-          Free shipping on orders over ₹999{' '}
-          <span className="text-red-400">✦</span>
+        <p className="tracking-wide text-center pr-8 sm:pr-0">
+          New arrivals are live — free shipping across India on orders over ₹999
         </p>
         <button
           onClick={() => setIsVisible(false)}
