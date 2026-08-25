@@ -8,7 +8,7 @@ const nextConfig = {
   turbopack: {},
   distDir: process.env.NEXT_DIST_DIR ?? '.next',
   allowedDevOrigins: ['*.tunnel.amboras.com'],
-  output: 'standalone',
+  output: process.env.VERCEL ? undefined : 'standalone',
   poweredByHeader: false,
   compress: true,
   env: {
