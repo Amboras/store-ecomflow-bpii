@@ -2,12 +2,48 @@
 
 import { useRef, useState } from 'react'
 import Image from 'next/image'
-import {
-  useMyReviews,
-  useCreateReview,
-  useUpdateReview,
-  type MyReview,
-} from '@amboras-dev/reviews'
+// @amboras-dev/reviews has been removed — using local stubs
+export type MyReview = {
+  id: string
+  product_id: string
+  order_id: string
+  rating: number
+  title?: string | null
+  content?: string | null
+  status: 'pending' | 'approved' | 'rejected'
+  media?: { url: string; type: 'image' | 'video' }[]
+}
+
+function useMyReviews(_opts?: { orderIds?: string[] }) {
+  return { data: undefined as { reviews: MyReview[] } | undefined, isLoading: false }
+}
+
+function useCreateReview() {
+  return {
+    mutateAsync: async (_input: {
+      product_id: string
+      order_id: string
+      rating: number
+      title?: string
+      content?: string
+      media?: { url: string; type: string }[]
+    }): Promise<{ discount_code?: string }> => { return {} },
+    isPending: false,
+  }
+}
+
+function useUpdateReview() {
+  return {
+    mutateAsync: async (_input: {
+      reviewId: string
+      rating?: number
+      title?: string
+      content?: string
+      media?: { url: string; type: string }[]
+    }): Promise<void> => {},
+    isPending: false,
+  }
+}
 import {
   Loader2,
   CheckCircle2,

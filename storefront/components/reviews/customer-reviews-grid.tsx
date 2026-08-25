@@ -3,7 +3,29 @@
 import { useMemo } from 'react'
 import Image from 'next/image'
 import { Package, Star, Play, Camera, BadgeCheck } from 'lucide-react'
-import { useProductReviews } from '@amboras-dev/reviews'
+// @amboras-dev/reviews has been removed — using local stub
+function useProductReviews(
+  _productId: string,
+  _opts?: { page?: number; perPage?: number },
+) {
+  return {
+    data: undefined as
+      | {
+          reviews: {
+            id: string
+            rating: number
+            title?: string | null
+            content?: string | null
+            created_at: string
+            media?: { url: string; type: 'image' | 'video' }[]
+          }[]
+          stats: { averageRating: number; totalCount: number; distribution: Record<number, number> }
+          count: number
+        }
+      | undefined,
+    isLoading: false,
+  }
+}
 
 export interface CustomerReviewsGridProps {
   productId: string

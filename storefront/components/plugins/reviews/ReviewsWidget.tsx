@@ -2,7 +2,32 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { useProductReviews } from '@amboras-dev/reviews'
+// @amboras-dev/reviews has been removed — using local stub
+function useProductReviews(
+  _productId: string,
+  _opts?: { page?: number; perPage?: number },
+) {
+  return {
+    data: undefined as
+      | {
+          reviews: {
+            id: string
+            rating: number
+            title?: string | null
+            content?: string | null
+            created_at: string
+            media?: { url: string; type: 'image' | 'video' }[]
+            reply?: string | null
+            reply_at?: string | null
+          }[]
+          stats: { averageRating: number; totalCount: number; distribution: Record<number, number> }
+          count: number
+        }
+      | undefined,
+    isLoading: false,
+    error: null,
+  }
+}
 import { Loader2, MessageSquare, ImageIcon, ChevronLeft, ChevronRight } from 'lucide-react'
 import StarRating from './StarRating'
 
