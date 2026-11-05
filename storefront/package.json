@@ -17,6 +17,7 @@
   "dependencies": {
     "@amboras-dev/plugin-types": "^1.1.0",
     "@amboras-dev/reviews": "0.4.0",
+    "@amboras-dev/storefront-core": "2026.11.4",
     "@hookform/resolvers": "^5.2.2",
     "@medusajs/js-sdk": "^2.13.4",
     "@stripe/react-stripe-js": "^5.6.1",
@@ -50,6 +51,14 @@
     "onlyBuiltDependencies": [
       "sharp",
       "unrs-resolver"
+    ]
+  },
+  "amboras": {
+    "core": "2026.11.4",
+    "coreKept": [
+      "hooks/use-checkout.ts",
+      "hooks/use-products.ts",
+      "lib/payment-providers/registry.ts"
     ]
   }
 }
